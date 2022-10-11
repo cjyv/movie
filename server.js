@@ -1,0 +1,274 @@
+const express = require('express');
+const path = require('path');
+const app = express();
+const cors = require('cors');
+const mysql = require('mysql');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const memoryStore = require('memorystore')(session);
+const multer = require('multer');
+
+//date比較
+const today = new Date()
+//session時間
+const maxAge = 1000 * 60 * 5;
+//ファイル
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'movie/public/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, "img/" + file.originalname)// 파일 원본이름 저장
+    }
+})
+
+const upload = multer({ storage: storage }); //
+
+
+//mysql
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "cc1029",
+    database: "practice"
+
+})
+
+//session
+app.use(session(
+    {
+        secret: "keyboard cat",
+        resave: false,
+        saveUninitialized: true,
+        store: new memoryStore({ checkPeriod: maxAge }),
+        cookie: { maxAge: maxAge }
+
+    }))
+
+
+
+app.use(express.static(path.join(__dirname, 'movie/build')));
+app.use(cors());
+app.use(bodyParser.json());
+
+
+app.get('/NowList/:genre', (req, res) => {
+    const genre = req.params.genre;
+    if (genre === "all") {
+        connection.query(
+            'select seq,title,director,poster,actor from movie where release_date < ?',
+            [today],
+            (error, result) => {
+                if (error) {
+                    console.log(error);
+                }
+
+                res.json(result);
+
+            }
+        )
+    }
+    else {
+        connection.query(
+            'select seq,title,director,poster,actor from movie where genre=? and release_date < ?',
+            [genre, today],
+            (error, result) => {
+                if (error) {
+                    console.log(error);
+                }
+
+                res.json(result);
+
+            }
+        )
+    }
+
+});
+
+app.get('/AfterList/:genre', (req, res) => {
+    const genre = req.params.genre;
+    if (genre === "all") {
+        connection.query(
+            'select seq,title,director,poster,actor from movie where release_date > ?',
+            [today],
+            (error, result) => {
+                if (error) {
+                    console.log(error);
+                }
+
+                res.json(result);
+
+            }
+        )
+    }
+    else {
+        connection.query(
+            'select seq,title,director,poster,actor from movie where genre=?  and release_date > ?',
+            [genre, today],
+            (error, result) => {
+                if (error) {
+                    console.log(error);
+                }
+
+                res.json(result);
+
+            }
+        )
+    }
+
+});
+
+app.get("/movieDetail/:seq", (req, res) => {
+    connection.query(
+        'select * from movie where seq = ?',
+        [req.params.seq],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            }
+            res.json(result);
+        }
+
+
+    )
+
+});
+
+
+app.post("/loginCheck", (req, res) => {
+    connection.query(
+        'select count(*) as count,seq,nickName,e_mail from account where e_mail=? and password=?',
+        [req.body.e_mail, req.body.password],
+        (error, result) => {
+
+            if (result[0].count == 0) {
+                res.json(result);
+            }
+            else {
+                req.session.user = {
+                    e_mail: result[0].e_mail,
+                    nickName: result[0].nickName,
+                    seq: result[0].seq,
+                    authorized: true
+
+                }
+                res.json(result);
+            }
+
+        }
+
+
+    )
+
+})
+
+
+app.get("/logOut", (req, res) => {
+    if (req.session.user) {
+        req.session.destroy();
+    }
+
+
+});
+
+
+
+app.post("/userState", (req, res) => {
+
+    if (req.session.user) {
+        res.json([{
+            state: 1,
+            seq: req.session.user.seq,
+            nickName: req.session.user.nickName
+        }])
+    } else {
+
+        res.json([{ state: 0 }])
+
+    }
+
+})
+
+app.post('/signUp', (req, res) => {
+
+    const email = req.body.email;
+    const password = req.body.password;
+    const name = req.body.name;
+    const nickName = req.body.nickName;
+    const number = req.body.number;
+
+    connection.query(
+        'insert into account(e_mail,password,name,nickName,phone) values(?,?,?,?,?)',
+        [email, password, name, nickName, number],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            }
+            console.log("登録成功");
+        }
+
+
+    )
+
+});
+
+app.post("/movieInsert", upload.single('poster'), (req, res) => {
+
+    const title = req.body.title;
+    const content = req.body.content;
+    const director = req.body.director;
+    const actor = req.body.actor;
+    const poster = req.file.filename;
+    const release_date = req.body.release_date;
+    const genre = req.body.genre;
+    console.log(actor);
+
+    connection.query(
+        'insert into movie(title,content,director,actor,poster,release_date,genre) values(?,?,?,?,?,?,?)',
+        [title, content, director, actor, poster, release_date, genre],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            }
+            else {
+                console.log("Insert success");
+            }
+        }
+
+
+    )
+
+
+
+})
+
+app.get("/movieDelete/:seq", (req, res) => {
+
+    connection.query(
+     "delete from movie where seq=?",
+     [req.params.seq],
+     (error,result)=>{
+        if(error){
+            console.log(error);
+        }
+        else{
+            console.log("delete success");
+        }
+     }
+    )
+
+
+});
+
+
+
+app.listen(8080, function () {
+    console.log('listenting on 8080')
+});
+
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/movie/build/index.html'));
+});
+
+
