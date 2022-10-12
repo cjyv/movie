@@ -50,7 +50,7 @@ const MovieInsert = () =>{
 
 
     return(
-        <div style={{width: "100%" ,height:"1000px", margin:"7% auto"}}>
+        <div style={{width: "100%" ,height:"900px", margin:"7% auto"}}>
         <h3 style={{textDecoration:"underline red",paddingLeft:"3%"}}>管理者ページ</h3>  
 <Form　style={{width: "50%", margin:"0 auto",marginTop:"4%",padding:"40px 50px",backgroundColor:"rgb(245, 245, 245)"}  }>
  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">

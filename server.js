@@ -7,18 +7,23 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const memoryStore = require('memorystore')(session);
 const multer = require('multer');
+const fs = require('fs');
+
+
+
 
 //date比較
-const today = new Date()
+const today = new Date();
+const yesterday = new Date(today.setDate(today.getDate()-1));
 //session時間
-const maxAge = 1000 * 60 * 5;
+const maxAge = 1000 * 60 * 10;
 //ファイル
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'movie/public/')
+        cb(null, 'movie/public/img/')
     },
     filename: (req, file, cb) => {
-        cb(null, "img/" + file.originalname)// 파일 원본이름 저장
+        cb(null, file.originalname)// 파일 원본이름 저장
     }
 })
 
@@ -52,6 +57,22 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
+app.get('/movieRank',(req,res)=>{
+    connection.query(
+    'select count(a.movie_number) as count, b.title, b.director, b.actor,rank() over(order by count(a.movie_number) desc) as ranking from practice.reservation as a join practice.movie as b on a.movie_number = b.seq group by b.title limit 3'
+    ,(error,result)=>{
+        if(error){
+            console.log(error);
+        }else{
+         
+            res.json(result);
+        }
+
+    }
+    )
+});
+
+
 app.get('/NowList/:genre', (req, res) => {
     const genre = req.params.genre;
     if (genre === "all") {
@@ -76,7 +97,7 @@ app.get('/NowList/:genre', (req, res) => {
                 if (error) {
                     console.log(error);
                 }
-
+                
                 res.json(result);
 
             }
@@ -221,7 +242,7 @@ app.post("/movieInsert", upload.single('poster'), (req, res) => {
     const poster = req.file.filename;
     const release_date = req.body.release_date;
     const genre = req.body.genre;
-    console.log(actor);
+
 
     connection.query(
         'insert into movie(title,content,director,actor,poster,release_date,genre) values(?,?,?,?,?,?,?)',
@@ -242,24 +263,102 @@ app.post("/movieInsert", upload.single('poster'), (req, res) => {
 
 })
 
-app.get("/movieDelete/:seq", (req, res) => {
+app.get("/movieDelete/:seq/:poster", (req, res) => {
+    const seq = req.params.seq;
+    const poster = req.params.poster;
 
     connection.query(
-     "delete from movie where seq=?",
-     [req.params.seq],
-     (error,result)=>{
-        if(error){
-            console.log(error);
+        "delete from movie where seq=?",
+        [seq],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            }
+            else {
+
+                console.log("delete success");
+            }
         }
-        else{
-            console.log("delete success");
-        }
-     }
     )
+    fs.unlink(__dirname + '/movie/public/img/' + poster, (err) => {
+        console.log(poster);
+    });
+
+});
+
+app.post("/accountList", (req, res) => {
+
+    connection.query(
+        'select * from account',
+        (error, result) => {
+
+            if (error) {
+                console.log(error);
+            } else {
+                res.json(result);
+            }
+
+
+        }
+    );
 
 
 });
 
+app.post("/userInfo", (req, res) => {
+
+    connection.query(
+        "select e_mail,name from account where seq= ?",
+        [req.body.seq],
+        (error, result) => {
+
+            if (error) {
+                console.log(error);
+            }
+            else {
+                res.json(result);
+            }
+
+        }
+
+
+    );
+
+})
+
+
+app.post("/reservation",(req,res)=>{
+    const user_number = req.body.user_number;
+    const movie_number = req.body.movie_number;
+    const reservation_date = req.body.reservation_date;
+    connection.query(
+    'insert into reservation(user_number,movie_number,reservation_date) values(?,?,?)',
+    [user_number,movie_number,reservation_date],
+    (error,result)=>{
+        if(error){
+            console.log(error);
+        }else{
+            console.log("reservation success");
+        }
+    }
+    )
+});
+
+app.post("/myReservation",(req,res)=>{
+    const user_number = req.body.user_number;
+    connection.query(
+    'select b.poster,b.title,a.reservation_date,a.movie_number from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? ; ',
+    [user_number,yesterday],
+    (error,result)=>{
+        if(error){
+            console.log(error);
+        }else{
+            res.json(result);
+        }
+    }    
+    )
+
+});
 
 
 app.listen(8080, function () {

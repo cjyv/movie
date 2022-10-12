@@ -11,7 +11,8 @@ const MovieDetail = () => {
   const location = useLocation();
   const [posts, setposts] = useState([]);
   const seq = location.state.seq;
-
+  const[usernumber, setusernumber] = useState(0);
+  
   useEffect(() => {
     axios.get("/movieDetail/" + seq)
       .then(res => {
@@ -19,12 +20,13 @@ const MovieDetail = () => {
 
       }).catch(error => {
         console.log(error);
-      })
+      });
 
 
     axios.post("/userState")
       .then(res => {
         setnickName(res.data[0].nickName);
+        setusernumber(res.data[0].seq);
       })
       .catch(error => {
         console.log(error);
@@ -39,9 +41,10 @@ const MovieDetail = () => {
 
 
   const movieDelete = (e) => {
+
     const confirm = window.confirm("この作品を削除しますか？");
     if (confirm) {
-      axios.get("/movieDelete/" + posts[0].seq)
+      axios.get('/movieDelete/'+posts[0].seq+'/'+posts[0].poster)
         .then(res => {
         })
         .catch(error => {
@@ -59,6 +62,18 @@ const MovieDetail = () => {
 
   }
 
+const movieReservation= (e) =>{
+const confirm = window.confirm("この作品を予約しますか？");
+
+if(confirm){
+
+}else{
+  e.preventDefault();
+}
+
+
+}
+
 
 
 
@@ -68,7 +83,7 @@ const MovieDetail = () => {
       <h3 style={{ textDecoration: "underline red", paddingLeft: "3%" }}>作品情報</h3>
       <div style={{ color: "white", background: "#292929", width: "80%", height: "500px", margin: "0 auto", marginTop: "5%" }}>
         <div className="detailImg" style={{ width: "30%", float: "left" }}>
-          {posts.map(post => <Image style={{ width: "70%", height: "80%", marginLeft: "40%", marginTop: "30%" }} src={"../" + `${post.poster}`} />)}
+          {posts.map(post => <Image style={{ width: "70%", height: "80%", marginLeft: "40%", marginTop: "30%" }} src={"../img/" + `${post.poster}`} />)}
         </div>
 
         <div className="detail comment" style={{ width: "70%", float: "right" }}>
@@ -87,7 +102,14 @@ const MovieDetail = () => {
         <Link to={"/"} style={{textDecoration: "none",color:"white"}}><div style={{ float: "right", width: "50%", textAlign: "right" }} onClick={movieDelete} ><Button variant="danger" style={{ width: "80%" }} type="submit">削除</Button></div></Link> 
         </div>
 
-        : null
+      :
+        <div style={{ width: "80%", height: "80px", margin: "0 auto", marginTop: "5%" }}>
+      <Link to={`/reservation/${seq}`} style={{textDecoration: "none",color:"white"}} state={{seq: seq, usernumber: usernumber}}>
+        <div style={{ width: "100%", textAlign: "center" }} onClick={movieReservation} >
+        <Button variant="danger" style={{ width: "60%",height:"80px" }} type="submit">今すぐ予約</Button></div>
+        </Link> 
+      </div>
+        
       }
 
     </div>

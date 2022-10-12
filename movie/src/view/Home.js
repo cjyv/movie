@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {Carousel} from 'react-bootstrap';
 import {Table} from 'react-bootstrap';
 import {Card} from 'react-bootstrap';
 import {Button} from 'react-bootstrap'
+import axios from "axios";
 
 const Home= () =>{
 
+  const [posts, setposts] = useState([]);
+
+  useEffect(()=>{
+    
+    axios.get("/movieRank")
+    .then(res=>{
+      console.log(res.data);
+      setposts(res.data);
+    }).catch(error=>{
+      console.log(error);
+    })
+
+  },[])
 
     return(
             <div>
@@ -36,34 +50,26 @@ const Home= () =>{
       </Carousel.Item>
     </Carousel>
 
-    <Table striped style={{width: "80%", margin:"5% auto"}}>
+    <Table striped style={{width: "80%", margin:"5% auto", textAlign:"center"}}>
       <thead>
         <tr>
-          <th><img src="https://cdn-icons-png.flaticon.com/512/5650/5650367.png" width={"15px"}></img>映画ランキング</th>
+          <th><img src="https://cdn-icons-png.flaticon.com/512/5650/5650367.png" width={"15px"}></img> 予約ランキング</th>
           <th>映画名</th>
           <th>監督</th>
           <th>主演</th>
+          <th>予約数</th>
         </tr>
       </thead>
       <tbody>
+        {posts.map(post=>
         <tr>
-          <td>1</td>
-          <td>One Piece Film: Red</td>
-          <td>谷口 悟朗</td>
-          <td>田中真弓、中井和哉、岡村明美 etc</td>
+          <td>{post.ranking}</td>
+          <td>{post.title}</td>
+          <td>{post.director}</td>
+          <td>{post.actor}</td>
+          <td>{post.count}</td>
         </tr>
-        <tr>
-          <td>2</td>
-          <td>沈黙のパレード</td>
-          <td>西谷 弘</td>
-          <td>福山雅治　柴咲コウ・北村一輝 etc</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td >"それ"がいる森</td>
-          <td>中田秀夫</td>
-          <td>相葉雅紀、松本穂香、上原剣心 etc</td>
-        </tr>
+        )}
       </tbody>
     </Table>
     <div  className="d-flex justify-content-around" style={{margin:"0 auto"}}>

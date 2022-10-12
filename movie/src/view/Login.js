@@ -36,7 +36,7 @@ const loginCheck=(e)=>{
         
           e.stopPropagation();
         }else{
-           alert("login!");
+           alert(`ようこそ ${res.data[0].nickName}様`);
         }
       })
       .catch(error=>{

@@ -55,8 +55,8 @@ class MovieList extends Component{
         <div>
           {posts.map(post=>
              
-             <Card style={{ width: '18rem',float:"left",  marginLeft:"8%",marginTop:"5%"}}>
-               <Card.Img variant="top" style={{height:"300px"}} src={post.poster} />
+             <Card style={{ width: '19rem',float:"left",  marginLeft:"8%",marginTop:"5%"}}>
+               <Card.Img variant="top" style={{height:"300px"}} src={`img/${post.poster}`} />
                <Card.Body>
                  <Card.Title>{post.title}</Card.Title>
                  <Card.Text>
