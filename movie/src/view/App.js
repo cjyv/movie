@@ -14,6 +14,7 @@ import Company from "./Company";
 import MyPage from "./MyPage";
 import NearlyCinema from "./NearlyCinema";
 import Reservation from "./Reservation";
+import MovieUpdate from "./MovieUpdate";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
       <Route exact path="/company" element={<Company/>}>Company</Route>
       <Route exact path="/nearlyCinema" element={<NearlyCinema/>}>nearlyCinema</Route>
       <Route exact path="/reservation/:seq" element={<Reservation/>}>reservation</Route>
+      <Route exact path="/movieUpdate" element={<MovieUpdate/>}>MovieUpdate</Route>
      </Routes>
      </BrowserRouter>
      <Footer/>

@@ -1,8 +1,4 @@
 import React from "react";
-import Form from 'react-bootstrap/Form';
-import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import axios from "axios";
 import MovieInsert from "./MovieInsert";
 import AccountManager from "./AccountManager";
 const Admin = ()=>{

@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
 const SignUp=()=>{
 
@@ -14,7 +14,7 @@ const SignUpCheck=(e)=>{
     const email = document.getElementsByName("email")[0].value;
     const password = document.getElementsByName("password")[0].value;
     const nickName = document.getElementsByName("nickName")[0].value;
-    const  name= document.getElementsByName("name")[0].value;
+    const  name = document.getElementsByName("name")[0].value;
     const number1 = document.getElementsByName("number1")[0].value;
     const number2 = document.getElementsByName("number2")[0].value;
     const number3 = document.getElementsByName("number3")[0].value;
@@ -41,10 +41,11 @@ const SignUpCheck=(e)=>{
         console.log(error);
       })
       alert("会員登録しました。これからよろしくお願いします。");
-      window.location.href="/";
-            }
-       else{
-        alert("もう登録されたメールアドレスです。");
+    }
+    else{
+      e.stopPropagation();
+      alert("もう登録されたメールアドレスです。");
+      window.location.href="/SignUp";
 
        }     
          })
@@ -95,10 +96,11 @@ return(
           </Row>
           </Form.Group>
       </Row>
-
+      <Link to={"/"} style={{textDecoration: "none",color:"white"}}>
       <Button onClick={SignUpCheck} variant="danger"  style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}}   type="submit">
         登録
       </Button>
+      </Link>
  
     </Form>
 </div>

@@ -14,7 +14,7 @@ const fs = require('fs');
 
 //date比較
 const today = new Date();
-const yesterday = new Date(today.setDate(today.getDate()-1));
+const yesterday = new Date(today.setDate(today.getDate() - 1));
 //session時間
 const maxAge = 1000 * 60 * 10;
 //ファイル
@@ -57,18 +57,18 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-app.get('/movieRank',(req,res)=>{
+app.get('/movieRank', (req, res) => {
     connection.query(
-    'select count(a.movie_number) as count, b.title, b.director, b.actor,rank() over(order by count(a.movie_number) desc) as ranking from practice.reservation as a join practice.movie as b on a.movie_number = b.seq group by b.title limit 3'
-    ,(error,result)=>{
-        if(error){
-            console.log(error);
-        }else{
-         
-            res.json(result);
-        }
+        'select count(a.movie_number) as count, b.title, b.director, b.actor,rank() over(order by count(a.movie_number) desc) as ranking from practice.reservation as a join practice.movie as b on a.movie_number = b.seq group by b.title limit 3'
+        , (error, result) => {
+            if (error) {
+                console.log(error);
+            } else {
 
-    }
+                res.json(result);
+            }
+
+        }
     )
 });
 
@@ -97,7 +97,7 @@ app.get('/NowList/:genre', (req, res) => {
                 if (error) {
                     console.log(error);
                 }
-                
+
                 res.json(result);
 
             }
@@ -209,20 +209,20 @@ app.post("/userState", (req, res) => {
     }
 
 })
-app.post('/signUpCheck',(req,res)=>{
+app.post('/signUpCheck', (req, res) => {
     const email = req.body.email;
     connection.query(
         'select count(*) as count from account where e_mail = ?',
         [email],
-        (error,result)=>{
-        if(error){
-            console.log(error);
-        }
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            }
             res.json(result);
-           
-        
+
+
         }
-        )
+    )
 })
 
 
@@ -242,11 +242,11 @@ app.post('/signUp', (req, res) => {
             if (error) {
                 console.log(error);
             }
-            res.json({account : 0});
+            res.json({ account: 0 });
             console.log("登録成功");
         }
     )
-    
+
 });
 
 app.post("/movieInsert", upload.single('poster'), (req, res) => {
@@ -267,17 +267,59 @@ app.post("/movieInsert", upload.single('poster'), (req, res) => {
             if (error) {
                 console.log(error);
             }
-            else {
+           
                 console.log("Insert success");
-            }
+            
         }
-
-
     )
+    });
+
+    app.post("/movieUpdate", upload.single('poster'), (req, res) => {
+        const seq = req.body.seq;
+        const title = req.body.title;
+        const content = req.body.content;
+        const director = req.body.director;
+        const actor = req.body.actor;
+        const release_date = req.body.release_date;
+        const genre = req.body.genre;
+        const hiddenPoster = req.body.hiddenPoster;
+       
+        try {  
+          const poster  = req.file.filename;
+            connection.query(
+                'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=?,poster=? where seq= ?',
+                [title,director,actor,genre,content,release_date,poster,seq],
+                (error,result)=>{
+                    if(error){
+                        console.log(error);
+                    }
+                    console.log("update success");
+                }
+            )
+            fs.unlink(__dirname + '/movie/public/img/' + hiddenPoster, (err) => {
+                console.log(hiddenPoster);
+            });
+
+        } catch (error) {
+
+
+            connection.query(
+                'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=? where seq= ?',
+                [title,director,actor,genre,content,release_date,seq],
+                (error,result)=>{
+                    if(error){
+                        console.log(error);
+                    }
+                    console.log("update success");
+                }
+            )
+
+    } 
+        
+    });
 
 
 
-})
 
 app.get("/movieDelete/:seq/:poster", (req, res) => {
     const seq = req.params.seq;
@@ -343,51 +385,51 @@ app.post("/userInfo", (req, res) => {
 })
 
 
-app.post("/reservation",(req,res)=>{
+app.post("/reservation", (req, res) => {
     const user_number = req.body.user_number;
     const movie_number = req.body.movie_number;
     const reservation_date = req.body.reservation_date;
     connection.query(
-    'insert into reservation(user_number,movie_number,reservation_date) values(?,?,?)',
-    [user_number,movie_number,reservation_date],
-    (error,result)=>{
-        if(error){
-            console.log(error);
-        }else{
-            console.log("reservation success");
+        'insert into reservation(user_number,movie_number,reservation_date) values(?,?,?)',
+        [user_number, movie_number, reservation_date],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("reservation success");
+            }
         }
-    }
     )
 });
 
-app.post("/myReservation",(req,res)=>{
+app.post("/myReservation", (req, res) => {
     const user_number = req.body.user_number;
     connection.query(
-    'select b.poster,b.title,a.reservation_date,a.movie_number from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? ; ',
-    [user_number,yesterday],
-    (error,result)=>{
-        if(error){
-            console.log(error);
-        }else{
-            res.json(result);
+        'select b.poster,b.title,a.reservation_date,a.movie_number from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? ; ',
+        [user_number, yesterday],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            } else {
+                res.json(result);
+            }
         }
-    }    
     )
 
 });
 
-app.post("/withdrawal",(req,res)=>{
-const seq = req.body.seq;
-connection.query(
-'delete from account where seq =?',
-[seq],
-(error,result)=>{
-    if(error){
-        console.log(error);
-    }
-    console.log("account delete success");
-}
-)
+app.post("/withdrawal", (req, res) => {
+    const seq = req.body.seq;
+    connection.query(
+        'delete from account where seq =?',
+        [seq],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            }
+            console.log("account delete success");
+        }
+    )
 });
 
 
@@ -399,5 +441,4 @@ app.listen(8080, function () {
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/movie/build/index.html'));
 });
-
 

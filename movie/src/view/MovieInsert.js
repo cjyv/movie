@@ -29,8 +29,8 @@ const MovieInsert = () =>{
         
           if (title === "" || director === ""||actor === ""||content === ""
           ||poster === ""||genre === ""||release_date === "") {
+            e.stopPropagation();
               alert("記入してないところがございます。ご確認ください。");
-              e.stopPropagation();
           }
           else{
               axios.post('/movieInsert',fmt,{

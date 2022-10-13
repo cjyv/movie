@@ -34,12 +34,15 @@ const loginCheck=(e)=>{
         
         if(`${res.data[0].count}`==0){
     
+          e.stopPropagation();
+          window.location.href="/Login";
           alert("登録されてない会員です。");
-          e.preventDefault();
+          
         }else{
-        
-          alert(`ようこそ ${res.data[0].nickName}様`);
+          
           window.location.href="/";
+          alert(`ようこそ ${res.data[0].nickName}様`);
+        
         }
       })
       .catch(error=>{
@@ -75,11 +78,11 @@ const loginCheck=(e)=>{
         <Form.Check type="checkbox" label="次回から自動的にログイン" />
       </Form.Group>
    
-          
+      <Link to={"/"} style={{textDecoration: "none",color:"white"}}>
       <Button onClick={loginCheck} variant="danger" style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}} type="submit">
         ログイン
       </Button>
-    
+      </Link>
     </Form>
     <div style={{marginTop:"3%",textAlign:"center"}}>
         <p>*会員ではない方は会員加入してください。</p>

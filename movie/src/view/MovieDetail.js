@@ -11,8 +11,8 @@ const MovieDetail = () => {
   const location = useLocation();
   const [posts, setposts] = useState([]);
   const seq = location.state.seq;
-  const[usernumber, setusernumber] = useState(0);
-  
+  const [usernumber, setusernumber] = useState(0);
+
   useEffect(() => {
     axios.get("/movieDetail/" + seq)
       .then(res => {
@@ -44,37 +44,47 @@ const MovieDetail = () => {
 
     const confirm = window.confirm("この作品を削除しますか？");
     if (confirm) {
-      axios.get('/movieDelete/'+posts[0].seq+'/'+posts[0].poster)
+      axios.get('/movieDelete/' + posts[0].seq + '/' + posts[0].poster)
         .then(res => {
         })
         .catch(error => {
           console.log(error);
         })
-        alert("削除成功しました。");
+      alert("削除成功しました。");
 
 
     } else {
       alert("削除失敗しました。");
-   
+
       e.preventDefault();
     }
 
 
   }
 
-const movieReservation= (e) =>{
-const confirm = window.confirm("この作品を予約しますか？");
+  const movieReservation = (e) => {
+    const confirm = window.confirm("この作品を予約しますか？");
 
-if(confirm){
+    if (confirm) {
 
-}else{
-  e.preventDefault();
-}
-
-
-}
+    } else {
+      e.preventDefault();
+    }
 
 
+  }
+
+  const movieUpdate = (e) => {
+    const confirm = window.confirm("この作品の情報を修正しますか？");
+
+    if (confirm) {
+
+    } else {
+      e.preventDefault();
+    }
+
+
+  }
 
 
   return (
@@ -98,18 +108,18 @@ if(confirm){
 
       {nickName === "admin" ?
         <div style={{ width: "80%", height: "80px", margin: "0 auto", marginTop: "5%" }}>
-          <div style={{ float: "left", width: "50%", textAlign: "left" }}><Button variant="primary" style={{ width: "80%", height: "100%" }} type="submit">修正</Button></div>
-        <Link to={"/"} style={{textDecoration: "none",color:"white"}}><div style={{ float: "right", width: "50%", textAlign: "right" }} onClick={movieDelete} ><Button variant="danger" style={{ width: "80%" }} type="submit">削除</Button></div></Link> 
+          <Link to={"/movieUpdate"} style={{ textDecoration: "none", color: "white" }} state={{seq: seq}}><div style={{ float: "left", width: "50%", textAlign: "left" }} onClick={movieUpdate} ><Button variant="primary" style={{ width: "80%", height: "100%" }} type="submit">修正</Button></div></Link>
+          <Link to={"/"} style={{ textDecoration: "none", color: "white" }}><div style={{ float: "right", width: "50%", textAlign: "right" }} onClick={movieDelete} ><Button variant="danger" style={{ width: "80%" }} type="submit">削除</Button></div></Link>
         </div>
 
-      :
+        :
         <div style={{ width: "80%", height: "80px", margin: "0 auto", marginTop: "5%" }}>
-      <Link to={`/reservation/${seq}`} style={{textDecoration: "none",color:"white"}} state={{seq: seq, usernumber: usernumber}}>
-        <div style={{ width: "100%", textAlign: "center" }} onClick={movieReservation} >
-        <Button variant="danger" style={{ width: "60%",height:"80px" }} type="submit">今すぐ予約</Button></div>
-        </Link> 
-      </div>
-        
+          <Link to={`/reservation/${seq}`} style={{ textDecoration: "none", color: "white" }} state={{ seq: seq, usernumber: usernumber }}>
+            <div style={{ width: "100%", textAlign: "center" }} onClick={movieReservation} >
+              <Button variant="danger" style={{ width: "60%", height: "80px" }} type="submit">今すぐ予約</Button></div>
+          </Link>
+        </div>
+
       }
 
     </div>
