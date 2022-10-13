@@ -209,6 +209,24 @@ app.post("/userState", (req, res) => {
     }
 
 })
+app.post('/signUpCheck',(req,res)=>{
+    const email = req.body.email;
+    connection.query(
+        'select count(*) as count from account where e_mail = ?',
+        [email],
+        (error,result)=>{
+        if(error){
+            console.log(error);
+        }
+            res.json(result);
+           
+        
+        }
+        )
+})
+
+
+
 
 app.post('/signUp', (req, res) => {
 
@@ -217,7 +235,6 @@ app.post('/signUp', (req, res) => {
     const name = req.body.name;
     const nickName = req.body.nickName;
     const number = req.body.number;
-
     connection.query(
         'insert into account(e_mail,password,name,nickName,phone) values(?,?,?,?,?)',
         [email, password, name, nickName, number],
@@ -225,12 +242,11 @@ app.post('/signUp', (req, res) => {
             if (error) {
                 console.log(error);
             }
+            res.json({account : 0});
             console.log("登録成功");
         }
-
-
     )
-
+    
 });
 
 app.post("/movieInsert", upload.single('poster'), (req, res) => {
@@ -358,6 +374,20 @@ app.post("/myReservation",(req,res)=>{
     }    
     )
 
+});
+
+app.post("/withdrawal",(req,res)=>{
+const seq = req.body.seq;
+connection.query(
+'delete from account where seq =?',
+[seq],
+(error,result)=>{
+    if(error){
+        console.log(error);
+    }
+    console.log("account delete success");
+}
+)
 });
 
 

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 const SignUp=()=>{
 
 
+
 const SignUpCheck=(e)=>{
     const email = document.getElementsByName("email")[0].value;
     const password = document.getElementsByName("password")[0].value;
@@ -21,10 +22,13 @@ const SignUpCheck=(e)=>{
     if (email === "" || password === ""||nickName === ""||name === ""
     ||number1 === ""||number2 === ""||number3 === "") {
         alert("記入してないところがございます。ご確認ください。")
-        e.stopPropagation();
+        e.preventDefault();
     }
     else{
-        axios.post('/SignUp',{
+         axios.post('/signUpCheck',{email: email})
+         .then(res=>{
+            if(res.data[0].count<1){
+   axios.post('/SignUp',{
             email: email,
             password: password,
             nickName: nickName,
@@ -32,11 +36,20 @@ const SignUpCheck=(e)=>{
             number: number1+number2+number3
         })
         .then(res=>{
-        })
-        .catch(error=>{
-            console.log(error);
-        })
-        alert("会員登録しました。これからよろしくお願いします。");
+      })
+      .catch(error=>{
+        console.log(error);
+      })
+      alert("会員登録しました。これからよろしくお願いします。");
+      window.location.href="/";
+            }
+       else{
+        alert("もう登録されたメールアドレスです。");
+
+       }     
+         })
+
+     
     }
 
 }
@@ -82,13 +95,11 @@ return(
           </Row>
           </Form.Group>
       </Row>
-<Link to={"/login"} style={{textDecoration: "none",color:"white"}}>
-    <div onClick={SignUpCheck}>
-      <Button variant="danger"  style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}}   type="submit">
+
+      <Button onClick={SignUpCheck} variant="danger"  style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}}   type="submit">
         登録
       </Button>
-      </div>
-    </Link>
+ 
     </Form>
 </div>
 

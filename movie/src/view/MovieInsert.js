@@ -51,7 +51,7 @@ const MovieInsert = () =>{
 
     return(
         <div style={{width: "100%" ,height:"900px", margin:"7% auto"}}>
-        <h3 style={{textDecoration:"underline red",paddingLeft:"3%"}}>管理者ページ</h3>  
+        <h6 style={{textDecoration:"underline red",paddingLeft:"15%"}}>作品追加</h6>  
 <Form　style={{width: "50%", margin:"0 auto",marginTop:"4%",padding:"40px 50px",backgroundColor:"rgb(245, 245, 245)"}  }>
  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
    <Form.Label>作品名</Form.Label>

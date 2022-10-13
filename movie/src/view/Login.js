@@ -7,6 +7,7 @@ import axios from "axios";
 
 const Login=()=>{
 
+
 const loginCheck=(e)=>{
    
     const email = document.getElementsByName("email")[0].value;
@@ -23,7 +24,7 @@ const loginCheck=(e)=>{
             alert("メールアドレスとパスワードを記入してください。");
         }
         
-        e.stopPropagation();
+        e.preventDefault();
     }else{
       axios.post("/loginCheck",{
         e_mail:email,
@@ -32,11 +33,13 @@ const loginCheck=(e)=>{
       .then(res=>{
         
         if(`${res.data[0].count}`==0){
+    
           alert("登録されてない会員です。");
-        
-          e.stopPropagation();
+          e.preventDefault();
         }else{
-           alert(`ようこそ ${res.data[0].nickName}様`);
+        
+          alert(`ようこそ ${res.data[0].nickName}様`);
+          window.location.href="/";
         }
       })
       .catch(error=>{
@@ -72,13 +75,11 @@ const loginCheck=(e)=>{
         <Form.Check type="checkbox" label="次回から自動的にログイン" />
       </Form.Group>
    
-          <Link to={"/"} style={{textDecoration: "none",color:"white"}}>
-          <div onClick={loginCheck} >
-      <Button variant="danger" style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}} type="submit">
+          
+      <Button onClick={loginCheck} variant="danger" style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}} type="submit">
         ログイン
       </Button>
-        </div>
-    </Link>
+    
     </Form>
     <div style={{marginTop:"3%",textAlign:"center"}}>
         <p>*会員ではない方は会員加入してください。</p>
