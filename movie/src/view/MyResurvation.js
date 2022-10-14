@@ -47,6 +47,9 @@ const MyResurvation = () => {
                <Card.Body>
                  <Card.Title>{post.title}</Card.Title>
                  <Card.Text>
+                    劇場：{post.cinema}
+                   </Card.Text>
+                 <Card.Text>
                     予約日付：{dayjs(`${post.reservation_date}`).format('YYYY-MM-DD HH:mm')}
                    </Card.Text>
                    <Link to={`/movieDetail/${post.movie_number}`} state={{seq: post.movie_number}} >

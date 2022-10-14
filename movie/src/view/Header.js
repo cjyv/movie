@@ -44,16 +44,12 @@ const Header = () => {
         .catch(error => {
           console.log(error);
         })
-
-
     }
     else {
 
 
       e.defaultprevente();
     }
-
-
   }
 
 
@@ -125,14 +121,16 @@ const Header = () => {
               }
 
             </Nav>
-            <Form className="d-flex">
+            <Form className="d-flex" action="/search">
               <Form.Control
                 type="search"
                 placeholder="作品及び関係者"
                 className="me-2"
                 aria-label="Search"
+                name="search"
+                id="search"
               />
-              <Button variant="outline-danger" style={{ width: "70px" }}>検索</Button>
+              <Button variant="outline-danger" style={{ width: "70px" }} type="submit">検索</Button>
             </Form>
           </Navbar.Collapse>
         </Container>

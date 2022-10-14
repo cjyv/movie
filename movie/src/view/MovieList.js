@@ -10,18 +10,14 @@ import MovieDetail from "./MovieDetail";
 class MovieList extends Component{
     state={
         posts:[]
-
     }
-    
     constructor(props) {
         super(props);
         //console.log(this.props);
-      }
-      
+      } 
       componentDidMount(){
         const genre = this.props.genre;
-        
-
+        const search = this.props.search;
         if(this.props.state==="now"){
             axios.get("/NowList/"+genre)
             .then(res=>{
@@ -37,6 +33,14 @@ class MovieList extends Component{
             
         }).catch(error=>{
             console.log(error);
+        })
+      }
+      else if(this.props.state==="search"){
+        axios.get(`/search/${search}`)
+        .then(res=>{
+          this.setState({posts: res.data})
+        })
+        .catch(error=>{
         })
       }
     } 

@@ -1,0 +1,41 @@
+react node（express) 
+
+初めてprojectを作る時、ホルダーに [npm init -y] -> [npm install express]
+を命令
+
+次はserver.jsを作成ー＞　
+
+ex) const express = require('express');
+const path = require('path');
+const app = express();
+
+app.use(express.static(path.join(__dirname,'movie/build')));
+
+
+app.listen(8080,function(){
+    console.log('listenting on 8080')
+});
+
+
+app.get('*',(req,res)=>{
+res.sendFile(path.join(__dirname,'/movie/build/index.html'));
+});
+
+上記の作業が終わったら[npm install create-react-app project名]
+
+これが終わったらApp.jsにrouterを使うため[npm install react-router-dom]を命令
+また、App.jsに
+import {BrowserRouter,Routes,Route} from "react-router-dom";
+import React from "react";
+を作成
+
+次にNodeサーバーとデータの受け取りのためReactホルダーのpakage.jsonに以下のProxyを作成
+ "proxy":"http://localhost:Port番号"
+
+またCorsバグが発生しないようにNodeサーバーのホルダーに[npm install cors]を命令し、
+var cors = require('cors');
+app.use(cors());
+を作成
+
+データの受け取りはfetch,axiosの二つで使いたいことを使えば良い
+

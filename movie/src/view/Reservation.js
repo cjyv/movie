@@ -57,10 +57,10 @@ const Reservation = () => {
         const date = document.getElementsByName("date")[0].value;
         const time = document.getElementsByName("time")[0].value;
         const datetime = date+" "+time;
-
+        const cinema =document.getElementsByName("cinema")[0].value;
 
         if(name===""||e_mail===""||date===null||time===null){
-            if(e_mail===""&&name!==""){
+            if(e_mail===""&&name!==""||cinema!==""){
                 e.preventDefault();
                 alert("メールアドレスを記入してください。");
                 document.getElementById("e_mail").focus();
@@ -77,6 +77,7 @@ const Reservation = () => {
             
                 axios.post("/reservation",{
                     movie_number: movie_number,
+                    cinema: cinema,
                     user_number: usernumber,
                     reservation_date: datetime
                 }).then(res=>{
@@ -125,10 +126,17 @@ const Reservation = () => {
                 </Row>
 
                 <Row className="mb-3">
-                    <Form.Group className="mb-3" controlId="formGridAddress2" style={{ textAlign: "left" }}>
-                        <Form.Label>メールアドレス</Form.Label>
-                        <Form.Control name="e_mail" id="e_mail" type="text" defaultValue={e_mail}  ></Form.Control>
-                    </Form.Group>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+   <Form.Label>劇場</Form.Label>
+   <Form.Select aria-label="Default select example" name="cinema" id="cinema">
+ <option>選択</option>
+ <option value="新宿店">新宿店</option>
+ <option value="渋谷店">渋谷店</option>
+ <option value="難波駅店">難波駅店</option>
+ <option value="博多駅店">博多駅店</option>
+ <option value="広島本通店">広島本通店</option>
+</Form.Select>
+ </Form.Group>
                 </Row>
 
                 <Row className="mb-3">

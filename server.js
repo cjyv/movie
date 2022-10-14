@@ -389,9 +389,10 @@ app.post("/reservation", (req, res) => {
     const user_number = req.body.user_number;
     const movie_number = req.body.movie_number;
     const reservation_date = req.body.reservation_date;
+    const cinema = req.body.cinema;
     connection.query(
-        'insert into reservation(user_number,movie_number,reservation_date) values(?,?,?)',
-        [user_number, movie_number, reservation_date],
+        'insert into reservation(user_number,movie_number,reservation_date,cinema) values(?,?,?,?)',
+        [user_number, movie_number, reservation_date,cinema],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -405,7 +406,7 @@ app.post("/reservation", (req, res) => {
 app.post("/myReservation", (req, res) => {
     const user_number = req.body.user_number;
     connection.query(
-        'select b.poster,b.title,a.reservation_date,a.movie_number from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? ; ',
+        'select b.poster,b.title,a.reservation_date,a.cinema,a.movie_number from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? ; ',
         [user_number, yesterday],
         (error, result) => {
             if (error) {
@@ -430,6 +431,23 @@ app.post("/withdrawal", (req, res) => {
             console.log("account delete success");
         }
     )
+});
+
+app.get('/search/:search',(req,res)=>{
+const param = req.params.search;
+const search = "%"+param+"%";
+connection.query(
+"select * from movie where actor Like ? || director Like ? || title Like ?",
+[search,search,search],
+(error,result)=>{
+    if(error){
+        console.log(error);
+    }else{
+        res.json(result);
+    }
+}
+
+)
 });
 
 
