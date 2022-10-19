@@ -34,7 +34,12 @@ const MyResurvation = (props) => {
 
 <div style={{marginTop:"5%" ,height:"500px"}}>
     <h6 style={{ textDecoration: "underline red", paddingLeft: "8%" }}>予約作品</h6>
-    {posts.map(post=>
+    {posts.length==0?
+    <div style={{marginTop:"10%" , textAlign:"center"}}>
+    <p>予約している作品がないです。</p>
+    </div>
+    :
+    posts.map(post=>
              
              <Card style={{ width: '16rem',float:"left",  marginLeft:"8%",marginTop:"2%"}}>
                <Card.Img variant="top" style={{height:"250px"}} src={`img/${post.poster}`} />

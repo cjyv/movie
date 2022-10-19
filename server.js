@@ -454,7 +454,7 @@ app.get('/search/:search', (req, res) => {
 app.post("/recomend",(req,res)=>{
     const user_number=req.body.user_number;
     connection.query(
-        'select * from movie where genre=(select a.genre from movie as a join reservation as b on  a.seq=b.movie_number and b.user_number=? limit 1) and not seq in (select a.seq from movie as a join reservation as b on a.seq=b.movie_number and b.user_number=? )',
+        'select * from movie where genre in (select distinct a.genre from movie as a join reservation as b on  a.seq=b.movie_number and b.user_number=? ) and not seq in (select a.seq from movie as a join reservation as b on a.seq=b.movie_number and b.user_number=? ) limit 3',
         [user_number,user_number],
         (error,result)=>{
             if(error){
