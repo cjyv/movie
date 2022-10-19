@@ -93,7 +93,7 @@ const Reservation = () => {
 
     return (
 
-        <div style={{ width: "100%", height: "1000px", margin: "7% auto" }}>
+        <div style={{ width: "100%", height: "1200px", margin: "7% auto" }}>
             <h3 style={{ textDecoration: "underline red", paddingLeft: "3%" }}>予約ページ</h3>
             <Form style={{ width: "50%", margin: "0 auto", marginTop: "4%", padding: "40px 50px", backgroundColor: "rgb(245, 245, 245)" }} action="/myPage" onSubmit={reservationCheck}>
 
@@ -122,6 +122,14 @@ const Reservation = () => {
 
                         <Form.Label>名前</Form.Label>
                         <Form.Control name="name" id="name" type="text" defaultValue={name}></Form.Control>
+                    </Form.Group>
+                </Row>
+
+                <Row className="mb-3">
+                    <Form.Group className="mb-3" controlId="formGridAddress2" style={{ textAlign: "left" }}>
+
+                        <Form.Label>メールアドレス</Form.Label>
+                        <Form.Control name="e_mail" id="e_mail" type="text" defaultValue={e_mail}></Form.Control>
                     </Form.Group>
                 </Row>
 
@@ -161,8 +169,4 @@ const Reservation = () => {
 )
 }
 export default Reservation;
-   /* <Link to={"/myPage"} style={{ textDecoration: "none", color: "white" }}>
-    <div onClick={reservationCheck}>
-    </div>
-     </Link>
-     */
+  

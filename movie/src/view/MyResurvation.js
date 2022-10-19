@@ -5,21 +5,15 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import dayjs from 'dayjs';
 
-const MyResurvation = () => {
+const MyResurvation = (props) => {
 
-    const [user_no, setUser_no] = useState(0);
+    
+  
+    const user_no=props.user_no;
     const [posts, setposts] = useState([]);
 
     useEffect(()=>{
-        axios.post("/userState")
-        .then(res => {
-          
-            setUser_no(res.data[0].seq);
-            
-        })
-        .catch(error => {
-          console.log(error);
-        });
+        
         
         axios.post("/myReservation",{
                 user_number:user_no

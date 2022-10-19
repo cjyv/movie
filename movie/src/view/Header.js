@@ -114,7 +114,7 @@ const Header = () => {
                     ?
                     null
                     :
-                    <Nav.Link href="/myPage" >マイページ</Nav.Link>
+                    <Nav.Link href="/myPage">マイページ</Nav.Link>
                   )
 
 

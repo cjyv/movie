@@ -13,7 +13,6 @@ const Home= () =>{
     
     axios.get("/movieRank")
     .then(res=>{
-      console.log(res.data);
       setposts(res.data);
     }).catch(error=>{
       console.log(error);

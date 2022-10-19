@@ -267,56 +267,56 @@ app.post("/movieInsert", upload.single('poster'), (req, res) => {
             if (error) {
                 console.log(error);
             }
-           
-                console.log("Insert success");
-            
+
+            console.log("Insert success");
+
         }
     )
-    });
+});
 
-    app.post("/movieUpdate", upload.single('poster'), (req, res) => {
-        const seq = req.body.seq;
-        const title = req.body.title;
-        const content = req.body.content;
-        const director = req.body.director;
-        const actor = req.body.actor;
-        const release_date = req.body.release_date;
-        const genre = req.body.genre;
-        const hiddenPoster = req.body.hiddenPoster;
-       
-        try {  
-          const poster  = req.file.filename;
-            connection.query(
-                'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=?,poster=? where seq= ?',
-                [title,director,actor,genre,content,release_date,poster,seq],
-                (error,result)=>{
-                    if(error){
-                        console.log(error);
-                    }
-                    console.log("update success");
+app.post("/movieUpdate", upload.single('poster'), (req, res) => {
+    const seq = req.body.seq;
+    const title = req.body.title;
+    const content = req.body.content;
+    const director = req.body.director;
+    const actor = req.body.actor;
+    const release_date = req.body.release_date;
+    const genre = req.body.genre;
+    const hiddenPoster = req.body.hiddenPoster;
+
+    try {
+        const poster = req.file.filename;
+        connection.query(
+            'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=?,poster=? where seq= ?',
+            [title, director, actor, genre, content, release_date, poster, seq],
+            (error, result) => {
+                if (error) {
+                    console.log(error);
                 }
-            )
-            fs.unlink(__dirname + '/movie/public/img/' + hiddenPoster, (err) => {
-                console.log(hiddenPoster);
-            });
+                console.log("update success");
+            }
+        )
+        fs.unlink(__dirname + '/movie/public/img/' + hiddenPoster, (err) => {
+            console.log(hiddenPoster);
+        });
 
-        } catch (error) {
+    } catch (error) {
 
 
-            connection.query(
-                'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=? where seq= ?',
-                [title,director,actor,genre,content,release_date,seq],
-                (error,result)=>{
-                    if(error){
-                        console.log(error);
-                    }
-                    console.log("update success");
+        connection.query(
+            'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=? where seq= ?',
+            [title, director, actor, genre, content, release_date, seq],
+            (error, result) => {
+                if (error) {
+                    console.log(error);
                 }
-            )
+                console.log("update success");
+            }
+        )
 
-    } 
-        
-    });
+    }
+
+});
 
 
 
@@ -392,7 +392,7 @@ app.post("/reservation", (req, res) => {
     const cinema = req.body.cinema;
     connection.query(
         'insert into reservation(user_number,movie_number,reservation_date,cinema) values(?,?,?,?)',
-        [user_number, movie_number, reservation_date,cinema],
+        [user_number, movie_number, reservation_date, cinema],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -433,22 +433,40 @@ app.post("/withdrawal", (req, res) => {
     )
 });
 
-app.get('/search/:search',(req,res)=>{
-const param = req.params.search;
-const search = "%"+param+"%";
-connection.query(
-"select * from movie where actor Like ? || director Like ? || title Like ?",
-[search,search,search],
-(error,result)=>{
-    if(error){
-        console.log(error);
-    }else{
-        res.json(result);
-    }
-}
+app.get('/search/:search', (req, res) => {
+    const param = req.params.search;
+    const search = "%" + param + "%";
+    connection.query(
+        "select * from movie where actor Like ? || director Like ? || title Like ?",
+        [search, search, search],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            } else {
+                
+                res.json(result);
+            }
+        }
 
-)
+    )
 });
+
+app.post("/recomend",(req,res)=>{
+    const user_number=req.body.user_number;
+    connection.query(
+        'select * from movie where genre=(select a.genre from movie as a join reservation as b on  a.seq=b.movie_number and b.user_number=? limit 1) and not seq in (select a.seq from movie as a join reservation as b on a.seq=b.movie_number and b.user_number=? )',
+        [user_number,user_number],
+        (error,result)=>{
+            if(error){
+                console.log(error);
+            }else{
+                res.json(result);
+            }
+        }
+
+    )
+})
+
 
 
 app.listen(8080, function () {
