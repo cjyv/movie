@@ -18,11 +18,23 @@ const SignUpCheck=(e)=>{
     const number1 = document.getElementsByName("number1")[0].value;
     const number2 = document.getElementsByName("number2")[0].value;
     const number3 = document.getElementsByName("number3")[0].value;
+    const emailReg= /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
     if (email === "" || password === ""||nickName === ""||name === ""
     ||number1 === ""||number2 === ""||number3 === "") {
         alert("記入してないところがございます。ご確認ください。")
         e.preventDefault();
+    }
+    else if(!email.match(emailReg)){
+      alert("メールアドレス形式が間違っています。確認し、記入してください。");
+      e.preventDefault();
+      document.getElementById("email").focus();
+    }
+    else if(!password.match(passwordReg)){
+      alert("パスワードは一つ以上の文字と数字で８字以上にして記入してください。");
+      e.preventDefault();
+      document.getElementById("password").focus();
     }
     else{
          axios.post('/signUpCheck',{email: email})
@@ -90,9 +102,9 @@ return(
         <Form.Group as={Col} controlId="formGridphone">
           <Form.Label>電話番号</Form.Label>
           <Row>
-         <Col xs={2}> <Form.Control name="number1" id="number1"/> </Col>
-          - <Col xs={2}> <Form.Control name="number2" id="number2"/> </Col> 
-          - <Col xs={2}> <Form.Control name="number3" id="number3"/> </Col>
+         <Col xs={2}> <Form.Control type="number"  name="number1" id="number1"/> </Col>
+          - <Col xs={2}> <Form.Control type="number"  name="number2" id="number2"/> </Col> 
+          - <Col xs={2}> <Form.Control type="number"  name="number3" id="number3"/> </Col>
           </Row>
           </Form.Group>
       </Row>
