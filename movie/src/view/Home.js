@@ -8,6 +8,7 @@ import axios from "axios";
 const Home= () =>{
 
   const [posts, setposts] = useState([]);
+  const [photos, setphotos] = useState([]);
 
   useEffect(()=>{
     
@@ -20,33 +21,28 @@ const Home= () =>{
 
   },[])
 
+  useEffect(()=>{
+    axios.get("/slide")
+    .then(res=>{
+      setphotos(res.data);
+    }).catch(error=>{
+      console.log(error);
+    })
+
+  },[])
+
     return(
             <div>
 <Carousel style={{width: "80%", margin:"7% auto"}}>
+{photos.map(photo=>
       <Carousel.Item>
         <img
           className="d-block w-100"
-          src="https://www.tohotheater.jp/include/home/mainVisual/images/main_slide_onepiecefilm-red.jpg"
+          src={"../img/" + `${photo.slide}`}
           alt="First slide"
         />
       </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="https://www.tohotheater.jp/include/home/mainVisual/images/main_slide_chinmonku-parade.jpg"
-          alt="Second slide"
-        />
-
-      </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="https://www.tohotheater.jp/include/home/mainVisual/images/main_slide_soremori-movie.jpg"
-          alt="Third slide"
-        />
-
-    
-      </Carousel.Item>
+          )}
     </Carousel>
 
     <Table striped style={{width: "80%", margin:"5% auto", textAlign:"center"}}>
