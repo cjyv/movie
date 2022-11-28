@@ -249,21 +249,23 @@ app.post('/signUp', (req, res) => {
     )
 
 });
-
-app.post("/movieInsert", upload.single('poster'), (req, res) => {
-
+//const fileFields = upload.fields([{name:'poster'},{name:'slide'}]);
+app.post("/movieInsert",upload.array("poster"), (req, res) => {
+   
     const title = req.body.title;
     const content = req.body.content;
     const director = req.body.director;
     const actor = req.body.actor;
-    const poster = req.file.filename;
+
+    const poster = req.files[0].filename;
+    const slide = req.files[1].filename;
     const release_date = req.body.release_date;
     const genre = req.body.genre;
 
 
     connection.query(
-        'insert into movie(title,content,director,actor,poster,release_date,genre) values(?,?,?,?,?,?,?)',
-        [title, content, director, actor, poster, release_date, genre],
+        'insert into movie(title,content,director,actor,poster,release_date,genre,slide) values(?,?,?,?,?,?,?,?)',
+        [title, content, director, actor, poster, release_date, genre,slide],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -474,7 +476,7 @@ app.get("/slide",(req,res)=>{
             if (error) {
                 console.log(error);
             }else{
-                console.log(result);
+            
                 res.json(result);
             }
         }

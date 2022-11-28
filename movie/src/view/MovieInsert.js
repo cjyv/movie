@@ -13,22 +13,27 @@ const MovieInsert = () =>{
           const director = document.getElementsByName("director")[0].value;
           const actor = document.getElementsByName("actor")[0].value;
           const  content= document.getElementsByName("content")[0].value;
-          const poster = document.getElementById("poster").files[0];
+         ;
           const genre = document.getElementsByName("genre")[0].value;
           const release_date = document.getElementsByName("release_date")[0].value;
-        
+   
         fmt.append("title",title);
         fmt.append("director",director);
         fmt.append("actor",actor);
         fmt.append("content",content);
-        fmt.append("poster",poster);
+        for (let i = 0; i < 2; i++) {
+          fmt.append("poster",document.getElementsByName("poster")[i].files[0]);
+          
+        }
+        
+        fmt.append("slide",slide);
         fmt.append("genre",genre);
         fmt.append("release_date",release_date);
-      
+  
         
         
           if (title === "" || director === ""||actor === ""||content === ""
-          ||poster === ""||genre === ""||release_date === "") {
+          ||poster === ""||genre === ""||release_date === ""||slide ==="") {
             e.stopPropagation();
               alert("記入してないところがございます。ご確認ください。");
           }
@@ -87,6 +92,8 @@ const MovieInsert = () =>{
  <Form.Group controlId="formFile" className="mb-3">
    <Form.Label>ポスター</Form.Label>
    <Form.Control type="file" name="poster" id="poster"/>
+   <Form.Label>スライド用ポスター</Form.Label>
+   <Form.Control type="file" name="poster" id="slide"/>
  </Form.Group>
  <Link to={"/"} style={{textDecoration: "none",color:"white"}} >
 <div onClick={insert}>
