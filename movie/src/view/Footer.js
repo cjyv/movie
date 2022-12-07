@@ -7,7 +7,7 @@ const Footer = () =>{
             // <div id="main-footer" className="text-center p-2"> 
         // m-auto 왼쪽오른쪽 여백 알아서 맞춰라. m : margin
         <div id="main-footer"  style={{ marginTop:"10%",height:"80px" ,background: "#343a40",
-            color : "#fff"}} className="text-center"> 
+            color : "#fff",clear:"both"}} className="text-center"> 
             
                 
                 

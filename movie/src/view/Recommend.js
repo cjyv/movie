@@ -10,7 +10,7 @@ const user_no = props.user_no;
 const [posts,setposts] = useState([]);
 
 useEffect(()=>{
-
+    
     axios.post("/recomend",{
         user_number : user_no
     }).then(res=>{

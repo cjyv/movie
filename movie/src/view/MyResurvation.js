@@ -5,6 +5,8 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import dayjs from 'dayjs';
 
+  
+
 const MyResurvation = (props) => {
 
     
@@ -26,9 +28,28 @@ const MyResurvation = (props) => {
         })
 
 
-    },[user_no])
+    },[posts]);
 
+    const cancel=(e)=>{
+     const seq= document.getElementById("seq").value;
+     const confirm = window.confirm("予約をキャンセルしますか？");
+     if (confirm) {
+      axios.post("/resurvationDelete",{
+        seq:seq
+        })
+        .then(res=>{
+  
+         })
+      .catch(error=>{
 
+          })
+     }
+     else{
+      e.preventDefault();
+     }
+   };
+
+    
 
     return (
 
@@ -54,6 +75,8 @@ const MyResurvation = (props) => {
                    <Link to={`/movieDetail/${post.movie_number}`} state={{seq: post.movie_number}} >
                  <Button variant="danger" style={{width:"100%"} } type="submit">映画情報</Button>
                  </Link>
+                 <input type={"hidden"} id="seq" value={post.seq}></input>
+                 <Button variant="success" style={{width:"100%"}} onClick={cancel} >予約キャンセル</Button>
                </Card.Body>
              </Card>
 
@@ -66,6 +89,7 @@ const MyResurvation = (props) => {
 
 
 )
+
 
 
 

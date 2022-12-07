@@ -6,7 +6,7 @@ import { Navbar } from 'react-bootstrap';
 import { NavDropdown } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
-
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Header = () => {
@@ -46,13 +46,15 @@ const Header = () => {
         })
     }
     else {
-
+   
 
       e.defaultprevente();
     }
   }
-
-
+const faq=()=>{
+ document.location.href=`/FAQ?state=${posts}`
+ 
+}
 
   return (
     <div>
@@ -76,8 +78,8 @@ const Header = () => {
                   IMAX劇場
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="#action5">
-                  イベント劇場
+                <NavDropdown.Item onClick={faq}  >
+                  ご質問・ご意見
                 </NavDropdown.Item>
               </NavDropdown>
               <Nav.Link href="/company" >

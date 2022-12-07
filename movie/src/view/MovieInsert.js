@@ -16,7 +16,7 @@ const MovieInsert = () =>{
          ;
           const genre = document.getElementsByName("genre")[0].value;
           const release_date = document.getElementsByName("release_date")[0].value;
-   
+          const slide = document.getElementById("slide").value;
         fmt.append("title",title);
         fmt.append("director",director);
         fmt.append("actor",actor);
@@ -26,7 +26,7 @@ const MovieInsert = () =>{
           
         }
         
-        fmt.append("slide",slide);
+     
         fmt.append("genre",genre);
         fmt.append("release_date",release_date);
   

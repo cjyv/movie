@@ -409,12 +409,13 @@ app.post("/reservation", (req, res) => {
 app.post("/myReservation", (req, res) => {
     const user_number = req.body.user_number;
     connection.query(
-        'select distinct b.poster,b.title,a.reservation_date,a.cinema,a.movie_number from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? ; ',
+        'select distinct b.poster,b.title,a.reservation_date,a.cinema,a.movie_number,a.seq from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? ; ',
         [user_number, yesterday],
         (error, result) => {
             if (error) {
                 console.log(error);
             } else {
+  
                 res.json(result);
             }
         }
@@ -471,7 +472,7 @@ app.post("/recomend",(req,res)=>{
 })
 app.get("/slide",(req,res)=>{
     connection.query(
-        'select slide from movie order by release_date desc limit 3 ',
+        'select slide from movie where slide is not null and slide != "" order by release_date desc limit 3 ',
         (error,result)=>{
             if (error) {
                 console.log(error);
@@ -481,6 +482,40 @@ app.get("/slide",(req,res)=>{
             }
         }
     )
+})
+
+app.post("/resurvationDelete",(req,res)=>{
+    const seq =req.body.seq;
+    connection.query(
+        'delete from reservation where seq=?',
+        [seq],
+        (error,result)=>{
+            if(error){
+                console.log(error);
+            }else{
+                console.log("予約キャンセル");
+            }
+        }
+    )
+})
+
+app.get("/faq/:question",(req,res)=>{
+    const question =req.params.question;
+    connection.query(
+        'select answer from faq where question = ?',
+        [question],
+        (error,result)=>{
+            if(error){
+                console.log(error);
+            }else{
+              
+                res.json(result);
+                
+            }
+        }
+    )
+
+
 })
 
 
