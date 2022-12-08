@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const memoryStore = require('memorystore')(session);
 const multer = require('multer');
-const fs = require('fs');
+const fs = require('fs'); 
 const { error } = require('console');
 
 
@@ -78,7 +78,7 @@ app.get('/NowList/:genre', (req, res) => {
     const genre = req.params.genre;
     if (genre === "all") {
         connection.query(
-            'select seq,title,director,poster,actor from movie where release_date < ?',
+            'select seq,title,director,poster,actor from movie where release_date < ? order by release_date desc',
             [today],
             (error, result) => {
                 if (error) {
@@ -92,7 +92,7 @@ app.get('/NowList/:genre', (req, res) => {
     }
     else {
         connection.query(
-            'select seq,title,director,poster,actor from movie where genre=? and release_date < ?',
+            'select seq,title,director,poster,actor from movie where genre=? and release_date < ? order by release_date desc',
             [genre, today],
             (error, result) => {
                 if (error) {
@@ -111,7 +111,7 @@ app.get('/AfterList/:genre', (req, res) => {
     const genre = req.params.genre;
     if (genre === "all") {
         connection.query(
-            'select seq,title,director,poster,actor from movie where release_date > ?',
+            'select seq,title,director,poster,actor from movie where release_date > ? order by release_date desc',
             [today],
             (error, result) => {
                 if (error) {
@@ -125,7 +125,7 @@ app.get('/AfterList/:genre', (req, res) => {
     }
     else {
         connection.query(
-            'select seq,title,director,poster,actor from movie where genre=?  and release_date > ?',
+            'select seq,title,director,poster,actor from movie where genre=?  and release_date > ? order by release_date desc',
             [genre, today],
             (error, result) => {
                 if (error) {
@@ -515,6 +515,39 @@ app.get("/faq/:question",(req,res)=>{
         }
     )
 
+
+})
+
+app.get("/faqList",(req,res)=>{
+    
+    connection.query(
+        'select question from faq order by seq desc limit 4',
+        (error,result)=>{
+            if (error) {
+                console.log(error);
+            }else{
+                res.json(result);
+            }
+        }
+
+    )
+
+})
+
+app.get("/myFaqList",(req,res)=>{
+    const user_no=req.session.user.seq;
+    connection.query(
+        'select question from faq where user_no = ? order by seq desc limit 4',
+        [user_no],
+        (error,result)=>{
+            if (error) {
+                console.log(error);
+            }else{
+                res.json(result);
+            }
+        }
+
+    )
 
 })
 

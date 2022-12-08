@@ -39,6 +39,15 @@ return(
   <Tab eventKey="horror" title="Horror" >
      <MovieList   genre="horror" state="after"/>
   </Tab>
+  <Tab eventKey="comedy" title="comedy" >
+     <MovieList   genre="comedy" state="after"/>
+  </Tab>
+  <Tab eventKey="SF" title="SF" >
+     <MovieList   genre="SF" state="after"/>
+  </Tab>
+  <Tab eventKey="Fantasy " title="Fantasy " >
+     <MovieList   genre="Fantasy " state="after"/>
+  </Tab>
     </Tabs>
                 
                 <div class="box is-banner" style={{margin:"0, auto",marginTop:"10%"}}>

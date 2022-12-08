@@ -79,6 +79,9 @@ const MovieInsert = () =>{
  <option value="horror">horror</option>
  <option value="anime">anime</option>
  <option value="romance">romance</option>
+ <option value="romance">comedy</option>
+ <option value="romance">SF</option>
+ <option value="romance">Fantasy</option>
 </Form.Select>
  </Form.Group>
  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
