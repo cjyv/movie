@@ -1,6 +1,7 @@
 import React from "react";
 import MovieInsert from "./MovieInsert";
 import AccountManager from "./AccountManager";
+import Answer from "./Answer"
 const Admin = ()=>{
 
     return(
@@ -9,6 +10,7 @@ const Admin = ()=>{
         <h3 style={{textDecoration:"underline red",paddingLeft:"3%"}}>管理者ページ</h3>  
           <MovieInsert></MovieInsert>
           <AccountManager></AccountManager>
+          <Answer></Answer>
         </div>
 
     );

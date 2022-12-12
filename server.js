@@ -502,7 +502,7 @@ app.post("/resurvationDelete",(req,res)=>{
 app.get("/faq/:question",(req,res)=>{
     const question =req.params.question;
     connection.query(
-        'select answer from faq where question = ?',
+        'select answer,question from faq where question = ?',
         [question],
         (error,result)=>{
             if(error){
@@ -546,6 +546,42 @@ app.get("/myFaqList",(req,res)=>{
                 res.json(result);
             }
         }
+
+    )
+
+})
+
+app.get("/noAnswerList",(req,res)=>{
+connection.query(
+'select question,seq from faq where answer="回答待ち"',
+(error,result)=>{
+    if(error){
+        console.log(error);
+    }else{
+        res.json(result);
+    }
+}
+
+
+)
+
+
+})
+
+app.post("/answerUpdate",(req,res)=>{
+    const seq =req.body.seq;
+    const answer = req.body.answer;
+    connection.query(
+"update faq set answer = ? where seq =?",
+[answer,seq],
+(error,result)=>{
+    if(error){
+        console.log(error);
+    }else{
+        console.log("answerInsert Success");
+    }
+}
+
 
     )
 
