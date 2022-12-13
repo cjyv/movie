@@ -7,12 +7,12 @@ import ListGroup from 'react-bootstrap/ListGroup';
 function MyVerticallyCenteredModal(props) {
     const question = props.question;
     const [answer,setAnswer] = useState("");
-    const [post,setpost] =useState("");
+
     
     useEffect(()=>{
         axios.get("/faq/"+question)
         .then(res=>{
-            setpost(res.data[0].question);
+        
             setAnswer(res.data[0].answer);
         })
         .catch(error=>{
@@ -22,6 +22,21 @@ function MyVerticallyCenteredModal(props) {
        
 
     },[question])
+
+    const questionInsert = () =>{
+        const myQuestion = document.getElementById("myQuestion").value;
+        axios.post("/questionInsert",{
+          question: myQuestion
+        })
+        .then(res=>{
+
+        })
+        .catch(error=>{
+          console.log(error);
+        })
+          alert("ご質問ありがとうございます。");
+          props.onHide();
+    }
 
 
     return (
@@ -33,20 +48,26 @@ function MyVerticallyCenteredModal(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-        {post!=""?
-         post :
-         "質問"
-        }
+        { question!=""? question : "質問"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+        {question==""?null:
           <h4>回答</h4>
-          <p>
+             }
+            {question!=""?
+            <p> 
             {answer}
           </p>
+          :
+            <textarea id="myQuestion" style={{width:"100%",height:"200px"}}></textarea>
+            }
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={props.onHide}>Close</Button>
+          {question!=""? null :
+          <Button variant="success" onClick={questionInsert}>登録</Button>
+        }
         </Modal.Footer>
       </Modal>
     );
@@ -94,7 +115,7 @@ const faq=()=>{
 
 
 
-    },[]);
+    },[myqs]);
 
  
   
@@ -131,7 +152,7 @@ return(
 <div style={{width:"100%",marginBottom:"30%"}}>
   
     <ListGroup style={{width:"45%", marginTop:"3%",marginRight:"2%",float:"right",textAlign:"center"}}>
-    <h5 style={{textAlign:"center",marginBottom:"2%"}}>私の質問、意見  <span　onClick={() => {setModalShow(true)}}><img  style={{width:"40px"}} alt="登録"  src="https://illustcenter.com/wp-content/uploads/2021/09/rdesign_12170.png"></img></span></h5>
+    <h5 style={{textAlign:"center",marginBottom:"2%"}}>私の質問、意見  <span　onClick={() => {setModalShow(true),setQuestion("")}}><img  style={{width:"40px"}} alt="登録"  src="https://illustcenter.com/wp-content/uploads/2021/09/rdesign_12170.png"></img></span></h5>
     {
     myqs.length==0?
     <div style={{marginTop:"10%" , textAlign:"center"}}>

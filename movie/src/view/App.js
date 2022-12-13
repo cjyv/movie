@@ -12,7 +12,7 @@ import SignUp from "./SignUp";
 import Admin from "./Admin";
 import Company from "./Company";
 import MyPage from "./MyPage";
-import NearlyCinema from "./NearlyCinema";
+import Cinema from "./Cinema";
 import Reservation from "./Reservation";
 import MovieUpdate from "./MovieUpdate";
 import Search from "./Search";
@@ -32,7 +32,7 @@ function App() {
       <Route exact path="/myPage" element={<MyPage/>}>MyPage</Route>
       <Route exact path="/admin" element={<Admin/>}>Admin</Route>
       <Route exact path="/company" element={<Company/>}>Company</Route>
-      <Route exact path="/nearlyCinema" element={<NearlyCinema/>}>nearlyCinema</Route>
+      <Route exact path="/Cinema" element={<Cinema/>}>nearlyCinema</Route>
       <Route exact path="/reservation/:seq" element={<Reservation/>}>reservation</Route>
       <Route exact path="/movieUpdate" element={<MovieUpdate/>}>MovieUpdate</Route>
       <Route exact path="/search" element={<Search/>}>Search</Route>

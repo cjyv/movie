@@ -324,9 +324,10 @@ app.post("/movieUpdate", upload.single('poster'), (req, res) => {
 
 
 
-app.get("/movieDelete/:seq/:poster", (req, res) => {
-    const seq = req.params.seq;
-    const poster = req.params.poster;
+app.post("/movieDelete", (req, res) => {
+    const seq = req.body.seq;
+    const poster = req.body.poster;
+    const slide = req.body.slide;
 
     connection.query(
         "delete from movie where seq=?",
@@ -343,6 +344,9 @@ app.get("/movieDelete/:seq/:poster", (req, res) => {
     )
     fs.unlink(__dirname + '/movie/public/img/' + poster, (err) => {
         console.log(poster);
+    });
+    fs.unlink(__dirname + '/movie/public/img/' + slide, (err) => {
+        console.log(slide);
     });
 
 });
@@ -519,9 +523,10 @@ app.get("/faq/:question",(req,res)=>{
 })
 
 app.get("/faqList",(req,res)=>{
-    
+    const answer = "回答待ち";
     connection.query(
-        'select question from faq order by seq desc limit 4',
+        'select question from faq where answer != ? order by seq desc limit 4',
+        [answer],
         (error,result)=>{
             if (error) {
                 console.log(error);
@@ -584,6 +589,26 @@ app.post("/answerUpdate",(req,res)=>{
 
 
     )
+
+})
+
+app.post("/questionInsert",(req,res)=>{
+    const question = req.body.question;
+    const answer = "回答待ち";
+    const user_no = req.session.user.seq;
+    connection.query(
+'insert into faq(question,answer,user_no) values(?,?,?)',
+[question,answer,user_no],
+(error,result)=>{
+    if(error){
+        console.log(error);
+    }else{
+        console.log("questionInsert Success");
+    }
+}
+
+    )
+
 
 })
 

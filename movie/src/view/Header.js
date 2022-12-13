@@ -73,10 +73,7 @@ const faq=()=>{
               <Nav.Link href="/movieNow">上映中作品情報</Nav.Link>
               <Nav.Link href="/movieAfter">公開予定作品情報</Nav.Link>
               <NavDropdown title="劇場探し" id="navbarScrollingDropdown">
-                <NavDropdown.Item href="/nearlyCinema">近所の劇場</NavDropdown.Item>
-                <NavDropdown.Item href="#action4">
-                  IMAX劇場
-                </NavDropdown.Item>
+                <NavDropdown.Item href="/Cinema">劇場一覧</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={faq}  >
                   ご質問・ご意見

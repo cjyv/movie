@@ -92,6 +92,9 @@ const update=(e)=>{
                         <option value="horror">horror</option>
                         <option value="anime">anime</option>
                         <option value="romance">romance</option>
+                        <option value="comedy">comedy</option>
+                        <option value="SF">SF</option>
+                        <option value="Fantasy">Fantasy</option>
                     </Form.Select>)}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">

@@ -5,7 +5,7 @@ import Answer from "./Answer"
 const Admin = ()=>{
 
     return(
-        <div style={{width: "100%" ,height:"1500px", margin:"7% auto"}}>
+        <div style={{width: "100%" ,height:"auto", margin:"7% auto"}}>
           
         <h3 style={{textDecoration:"underline red",paddingLeft:"3%"}}>管理者ページ</h3>  
           <MovieInsert></MovieInsert>

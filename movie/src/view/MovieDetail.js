@@ -43,8 +43,16 @@ const MovieDetail = () => {
   const movieDelete = (e) => {
 
     const confirm = window.confirm("この作品を削除しますか？");
+    const seq =posts[0].seq;
+    const poster = posts[0].poster;
+    const slide = posts[0].slide;
     if (confirm) {
-      axios.get('/movieDelete/' + posts[0].seq + '/' + posts[0].poster)
+      axios.post('/movieDelete/' ,{
+        seq:seq,
+        poster:poster,
+        slide:slide
+
+      })
         .then(res => {
         })
         .catch(error => {

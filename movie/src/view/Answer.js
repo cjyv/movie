@@ -63,13 +63,7 @@ const answer=()=>{
 <div style={{marginTop:"3%"}}>
 <h6 style={{textDecoration:"underline red",paddingLeft:"10%"}}>回答待ち質問</h6>  
     <div style={{marginTop:"3%" , textAlign:"center"}}>
-{questions.length==0?
-  <p>回答待ちの質問がないです。</p>
-  :
-  
-  questions.map(question=>
-    
-<Table bordered style={{width: "80%", margin:"0 auto",textAlign:"center",marginTop:"3%"}}>
+    <Table bordered style={{width: "80%", margin:"0 auto",textAlign:"center",marginTop:"3%"}}>
 <thead>
     <tr>
         <th style={{width:"80%"}}>質問</th>
@@ -77,6 +71,18 @@ const answer=()=>{
     </tr>
 </thead>
 <tbody>
+{questions.length==0?
+<tr>
+  <td colSpan={2}>回答待ちの質問がないです。</td>
+  </tr>
+  :null
+}
+  
+    
+
+  {questions.length==0? null:
+ 
+    questions.map(question=>
     <tr>
         <td>{question.question}</td>
         <td>
@@ -85,11 +91,11 @@ const answer=()=>{
 
             <Button variant="success" onClick={handleShow}>回答</Button></td>
 </tr>
+)
+}
 </tbody>
 </Table>
-)
 
-}
 
 <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
