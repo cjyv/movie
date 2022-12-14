@@ -60,7 +60,8 @@ app.use(bodyParser.json());
 
 app.get('/movieRank', (req, res) => {
     connection.query(
-        'select count(a.movie_number) as count, b.title, b.director, b.actor,rank() over(order by count(a.movie_number) desc) as ranking from practice.reservation as a join practice.movie as b on a.movie_number = b.seq group by b.title limit 3'
+        'select count(a.movie_number) as count, b.title, b.director, b.actor,rank() over(order by count(a.movie_number) desc) as ranking from practice.reservation as a join practice.movie as b on a.movie_number = b.seq and b.end_date>? group by b.title limit 3',
+        [today]
         , (error, result) => {
             if (error) {
                 console.log(error);
@@ -78,8 +79,8 @@ app.get('/NowList/:genre', (req, res) => {
     const genre = req.params.genre;
     if (genre === "all") {
         connection.query(
-            'select seq,title,director,poster,actor from movie where release_date < ? order by release_date desc',
-            [today],
+            'select seq,title,director,poster,actor from movie where release_date < ? and end_date > ? order by release_date desc',
+            [today,today],
             (error, result) => {
                 if (error) {
                     console.log(error);
@@ -92,8 +93,8 @@ app.get('/NowList/:genre', (req, res) => {
     }
     else {
         connection.query(
-            'select seq,title,director,poster,actor from movie where genre=? and release_date < ? order by release_date desc',
-            [genre, today],
+            'select seq,title,director,poster,actor from movie where genre=? and release_date < ? and end_date > ? order by release_date desc',
+            [genre, today,today],
             (error, result) => {
                 if (error) {
                     console.log(error);
@@ -111,7 +112,7 @@ app.get('/AfterList/:genre', (req, res) => {
     const genre = req.params.genre;
     if (genre === "all") {
         connection.query(
-            'select seq,title,director,poster,actor from movie where release_date > ? order by release_date desc',
+            'select seq,title,director,poster,actor from movie where release_date > ?  order by release_date desc',
             [today],
             (error, result) => {
                 if (error) {
@@ -125,7 +126,7 @@ app.get('/AfterList/:genre', (req, res) => {
     }
     else {
         connection.query(
-            'select seq,title,director,poster,actor from movie where genre=?  and release_date > ? order by release_date desc',
+            'select seq,title,director,poster,actor from movie where genre=?  and release_date > ?  order by release_date desc',
             [genre, today],
             (error, result) => {
                 if (error) {
@@ -256,7 +257,7 @@ app.post("/movieInsert",upload.array("poster"), (req, res) => {
     const content = req.body.content;
     const director = req.body.director;
     const actor = req.body.actor;
-
+    const end_date=req.body.end_date;
     const poster = req.files[0].filename;
     const slide = req.files[1].filename;
     const release_date = req.body.release_date;
@@ -264,8 +265,8 @@ app.post("/movieInsert",upload.array("poster"), (req, res) => {
 
 
     connection.query(
-        'insert into movie(title,content,director,actor,poster,release_date,genre,slide) values(?,?,?,?,?,?,?,?)',
-        [title, content, director, actor, poster, release_date, genre,slide],
+        'insert into movie(title,content,director,actor,poster,release_date,genre,slide,end_date) values(?,?,?,?,?,?,?,?,?)',
+        [title, content, director, actor, poster, release_date, genre,slide,end_date],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -284,14 +285,15 @@ app.post("/movieUpdate", upload.single('poster'), (req, res) => {
     const director = req.body.director;
     const actor = req.body.actor;
     const release_date = req.body.release_date;
+    const end_date = req.body.end_date;
     const genre = req.body.genre;
     const hiddenPoster = req.body.hiddenPoster;
 
     try {
         const poster = req.file.filename;
         connection.query(
-            'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=?,poster=? where seq= ?',
-            [title, director, actor, genre, content, release_date, poster, seq],
+            'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=?,poster=?,end_date=? where seq= ?',
+            [title, director, actor, genre, content, release_date, poster,end_date,seq],
             (error, result) => {
                 if (error) {
                     console.log(error);
@@ -307,8 +309,8 @@ app.post("/movieUpdate", upload.single('poster'), (req, res) => {
 
 
         connection.query(
-            'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=? where seq= ?',
-            [title, director, actor, genre, content, release_date, seq],
+            'update movie set title = ?, director=?, actor=?,genre=?,content=?,release_date=?,end_date=? where seq= ?',
+            [title, director, actor, genre, content, release_date,end_date, seq],
             (error, result) => {
                 if (error) {
                     console.log(error);
@@ -413,7 +415,7 @@ app.post("/reservation", (req, res) => {
 app.post("/myReservation", (req, res) => {
     const user_number = req.body.user_number;
     connection.query(
-        'select distinct b.poster,b.title,a.reservation_date,a.cinema,a.movie_number,a.seq from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? ; ',
+        'select distinct b.poster,b.title,a.reservation_date,c.name as cinema,a.movie_number,a.seq from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? join cinema  as c on c.seq=a.cinema; ',
         [user_number, yesterday],
         (error, result) => {
             if (error) {

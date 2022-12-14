@@ -37,6 +37,7 @@ const update=(e)=>{
     const poster = document.getElementById("poster").files[0];
     const genre = document.getElementsByName("genre")[0].value;
     const release_date = document.getElementsByName("release_date")[0].value;
+    const end_date = document.getElementsByName("end_date")[0].value;
     const hiddenPoster =document.getElementsByName("hiddenPoster")[0].value;
 
     fmt.append("seq",seq);
@@ -47,6 +48,7 @@ const update=(e)=>{
     fmt.append("poster",poster);
     fmt.append("genre",genre);
     fmt.append("release_date",release_date);
+    fmt.append("end_date",release_date);
     fmt.append("hiddenPoster",hiddenPoster);
 
     axios.post('/movieUpdate',fmt,{
@@ -100,6 +102,10 @@ const update=(e)=>{
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                     <Form.Label>リリース</Form.Label>
                     {posts.map(post => <Form.Control type="date" name="release_date" id="release_date" defaultValue={dayjs(`${post.release_date}`).format('YYYY-MM-DD')} />)}
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>上映中止日</Form.Label>
+                    {posts.map(post => <Form.Control type="date" name="end_date" id="end_date" defaultValue={dayjs(`${post.end_date}`).format('YYYY-MM-DD')} />)}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                     <Form.Label>内容</Form.Label>

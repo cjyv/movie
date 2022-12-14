@@ -16,6 +16,7 @@ const MovieInsert = () =>{
          ;
           const genre = document.getElementsByName("genre")[0].value;
           const release_date = document.getElementsByName("release_date")[0].value;
+          const end_date = document.getElementsByName("end_date")[0].value;
           const slide = document.getElementById("slide").value;
         fmt.append("title",title);
         fmt.append("director",director);
@@ -29,11 +30,12 @@ const MovieInsert = () =>{
      
         fmt.append("genre",genre);
         fmt.append("release_date",release_date);
+        fmt.append("end_date",end_date);
   
         
         
           if (title === "" || director === ""||actor === ""||content === ""
-          ||poster === ""||genre === ""||release_date === ""||slide ==="") {
+          ||poster === ""||genre === ""||release_date === ""||slide ===""||end_date==="") {
             e.stopPropagation();
               alert("記入してないところがございます。ご確認ください。");
           }
@@ -55,7 +57,7 @@ const MovieInsert = () =>{
 
 
     return(
-        <div style={{width: "100%" ,height:"900px", margin:"7% auto"}}>
+        <div style={{width: "100%" ,height:"auto", margin:"7% auto"}}>
         <h6 style={{textDecoration:"underline red",paddingLeft:"15%"}}>作品追加</h6>  
 <Form　style={{width: "50%", margin:"0 auto",marginTop:"4%",padding:"40px 50px",backgroundColor:"rgb(245, 245, 245)"}  }>
  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -87,6 +89,10 @@ const MovieInsert = () =>{
  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
    <Form.Label>リリース</Form.Label>
    <Form.Control type="date" name="release_date" id="release_date" />
+ </Form.Group>
+ <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+   <Form.Label>上映中止日</Form.Label>
+   <Form.Control type="date" name="end_date" id="end_date" />
  </Form.Group>
  <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
    <Form.Label>内容</Form.Label>

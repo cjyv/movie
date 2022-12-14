@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { Image } from "react-bootstrap";
+import dayjs from 'dayjs';
 
 
 const Reservation = () => {
@@ -16,11 +17,29 @@ const Reservation = () => {
     const [posts, setposts] = useState([]);
     const [name, setname] = useState("");
     const [e_mail, sete_mail] = useState("");
+    const [cinema,setcinema]= useState(null);
+    //const [now,setnow] = useState("");
+    
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth()+1;
+    const day = today.getDate();
+    const now = year+"-"+month+"-"+day;
+    
+  
+    
+    if(location.state.cinema!=null){
+        setcinema(location.state.cinema);
+    }
+
     const movie_number = location.state.seq;
     const usernumber = location.state.usernumber;
 
+
+
     useEffect(() => {
-        console.log(usernumber)
+       
         if (usernumber == null) {
             alert("ログインしてください。");
             window.location.href = "/login";
@@ -48,7 +67,26 @@ const Reservation = () => {
                 console.log(error);
             })
 
-    }, [])
+    }, []);
+    useEffect(()=>{
+        const cinema =document.getElementById("cinema").value;
+        const date = document.getElementsByName("date")[0].value;
+        
+        if(date!=null){
+            axios.get("/cinemaScedule",{
+                movie_number: movie_number,
+                cinema: cinema,
+                date: date
+            })
+            .then(res=>{
+                console.log(res);
+            })
+            .catch(error=>{
+                console.log(error);
+            })
+        }
+    },[cinema])
+    
     
     const reservationCheck = (e) => {
         
@@ -115,7 +153,6 @@ const Reservation = () => {
                     <Row>
                         <h6 style={{ textDecoration: "underline red", paddingLeft: "3%" }}>予約者情報</h6>
                     </Row>
-
                 </Row>
                 <Row className="mb-3">
                     <Form.Group className="mb-3" controlId="formGridAddress2" style={{ textAlign: "left" }}>
@@ -135,14 +172,33 @@ const Reservation = () => {
 
                 <Row className="mb-3">
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-   <Form.Label>劇場</Form.Label>
-   <Form.Select aria-label="Default select example" name="cinema" id="cinema">
- <option>選択</option>
- <option value="新宿店">新宿店</option>
- <option value="渋谷店">渋谷店</option>
- <option value="難波駅店">難波駅店</option>
- <option value="博多駅店">博多駅店</option>
- <option value="広島本通店">広島本通店</option>
+   <Form.Label>劇場</Form.Label> 
+   <Form.Select aria-label="Default select example" name="cinema" id="cinema" defaultValue={cinema}>
+ <option value={null}>選択</option>
+ <option value="1">TOHOシネマズ おいらせ下田</option>
+ <option value="2">TOHOシネマズ 秋田</option>
+ <option value="3">TOHOシネマズ 仙台</option>
+ <option value="4">TOHOシネマズ 日比谷</option>
+ <option value="5">TOHOシネマズ 日比谷</option>
+ <option value="6">TOHOシネマズ 池袋</option>
+ <option value="7">TOHOシネマズ 柏</option>
+ <option value="8">TOHOシネマズ ららぽーと船橋</option>
+ <option value="9">TOHOシネマズ 海老名</option>
+ <option value="10">TOHOシネマズ ららぽーと横浜</option>
+ <option value="11">TOHOシネマズ ららぽーと富士見</option>
+ <option value="12">TOHOシネマズ 赤池</option>
+ <option value="13">TOHOシネマズ 津島</option>
+ <option value="14">TOHOシネマズ 浜松</option>
+ <option value="15">TOHOシネマズ 梅田</option>
+ <option value="16">TOHOシネマズ くずはモール</option>
+ <option value="17">TOHOシネマズ 二条</option>
+ <option value="18">TOHOシネマズ 岡南</option>
+ <option value="19">TOHOシネマズ 緑井</option>
+ <option value="20">TOHOシネマズ 高知</option>
+ <option value="21">TOHOシネマズ 新居浜</option>
+ <option value="22">TOHOシネマズ ららぽーと福岡</option>
+ <option value="23">TOHOシネマズ 天神・ソラリア館</option>
+ <option value="24">TOHOシネマズ 熊本サクラマチ</option>
 </Form.Select>
  </Form.Group>
                 </Row>
@@ -150,7 +206,7 @@ const Reservation = () => {
                 <Row className="mb-3">
                     <Form.Group as={Col} className="mb-3" controlId="formGridAddress2" style={{ textAlign: "left" }}>
                         <Form.Label>日付</Form.Label>
-                        <Form.Control name="date" id="date" type="date" />
+                        <Form.Control name="date" id="date" type="date" min={now} />
                     </Form.Group>
                     <Form.Group as={Col} className="mb-3" controlId="formGridAddress2" style={{ textAlign: "left" }}>
                         <Form.Label>時間</Form.Label>

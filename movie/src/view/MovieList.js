@@ -17,6 +17,7 @@ class MovieList extends Component{
       componentDidMount(){
         const genre = this.props.genre;
         const search = this.props.search;
+       
         if(this.props.state==="now"){
             axios.get("/NowList/"+genre)
             .then(res=>{

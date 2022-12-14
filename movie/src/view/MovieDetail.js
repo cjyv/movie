@@ -10,14 +10,23 @@ const MovieDetail = () => {
   const [nickName, setnickName] = useState("");
   const location = useLocation();
   const [posts, setposts] = useState([]);
+  const [reservation_ok,setreservation_ok] =useState("");
   const seq = location.state.seq;
   const [usernumber, setusernumber] = useState(0);
+  const now = new Date();
 
   useEffect(() => {
     axios.get("/movieDetail/" + seq)
       .then(res => {
         setposts(res.data)
-
+        const release_date=new Date(res.data[0].release_date);
+        const reservation_date = new Date(release_date.setDate(release_date.getDate() - 7));
+        if (now>=reservation_date) {
+          setreservation_ok("ok");
+        }
+        else{
+          setreservation_ok("no");
+        }
       }).catch(error => {
         console.log(error);
       });
@@ -97,7 +106,7 @@ const MovieDetail = () => {
 
   return (
     <div style={{ marginTop: "8%" }}>
-
+        
       <h3 style={{ textDecoration: "underline red", paddingLeft: "3%" }}>作品情報</h3>
       <div style={{ color: "white", background: "#292929", width: "80%", height: "500px", margin: "0 auto", marginTop: "5%" }}>
         <div className="detailImg" style={{ width: "30%", float: "left" }}>
@@ -105,6 +114,7 @@ const MovieDetail = () => {
         </div>
 
         <div className="detail comment" style={{ width: "70%", float: "right" }}>
+           
           {posts.map(post => <h2 style={{ textalin: "center", marginLeft: "30%", marginTop: "5%" }}>{post.title}</h2>)}
           {posts.map(post => <p style={{ textalin: "left", marginLeft: "30%", marginTop: "3%" }}>監督：{post.director}</p>)}
           {posts.map(post => <p style={{ textalin: "left", marginLeft: "30%", marginTop: "0.7%" }}>出演：{post.actor}</p>)}
@@ -120,13 +130,15 @@ const MovieDetail = () => {
           <Link to={"/"} style={{ textDecoration: "none", color: "white" }}><div style={{ float: "right", width: "50%", textAlign: "right" }} onClick={movieDelete} ><Button variant="danger" style={{ width: "80%" }} type="submit">削除</Button></div></Link>
         </div>
 
-        :
+        : 
+        reservation_ok==="ok"?
         <div style={{ width: "80%", height: "80px", margin: "0 auto", marginTop: "5%" }}>
           <Link to={`/reservation/${seq}`} style={{ textDecoration: "none", color: "white" }} state={{ seq: seq, usernumber: usernumber }}>
             <div style={{ width: "100%", textAlign: "center" }} onClick={movieReservation} >
               <Button variant="danger" style={{ width: "60%", height: "80px" }} type="submit">今すぐ予約</Button></div>
           </Link>
         </div>
+        : null
 
       }
 

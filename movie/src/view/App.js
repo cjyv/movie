@@ -17,6 +17,8 @@ import Reservation from "./Reservation";
 import MovieUpdate from "./MovieUpdate";
 import Search from "./Search";
 import FAQ from "./FAQ";
+import CinemaMovies from "./CinemaMovies";
+
 function App() {
   return (
     <div className="App">
@@ -37,6 +39,8 @@ function App() {
       <Route exact path="/movieUpdate" element={<MovieUpdate/>}>MovieUpdate</Route>
       <Route exact path="/search" element={<Search/>}>Search</Route>
       <Route exact path="/FAQ" element={<FAQ/>}>FAQ</Route>
+      <Route exact path="/CinemaMovies" element={<CinemaMovies/>}>CinemaMovies</Route>
+
      </Routes>
      </BrowserRouter>
      <Footer/>
