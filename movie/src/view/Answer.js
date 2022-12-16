@@ -11,10 +11,8 @@ const answer=()=>{
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () =>{setShow(true);
-        setpost(document.getElementById("question").value);
-        setseq(document.getElementById("seq").value);
-    };
+  
+    
       
  
 
@@ -86,10 +84,9 @@ const answer=()=>{
     <tr>
         <td>{question.question}</td>
         <td>
-            <input type={"hidden"} id="question" value={question.question}></input>
-            <input type={"hidden"} id="seq" value={question.seq}></input>
 
-            <Button variant="success" onClick={handleShow}>回答</Button></td>
+
+            <Button variant="success" onClick={()=>{setShow(true),setseq(question.seq),setpost(question.question)}}>回答</Button></td>
 </tr>
 )
 }

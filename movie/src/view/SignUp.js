@@ -75,7 +75,7 @@ const SignUpCheck=(e)=>{
 return(
     <div style={{width: "100%" ,height:"600px", margin:"7% auto"}}>
         <h3 style={{textDecoration:"underline red",paddingLeft:"3%"}}>会員登録</h3>  
-<Form style={{width: "50%", margin:"0 auto",marginTop:"4%",padding:"40px 50px",backgroundColor:"rgb(245, 245, 245)"} }>
+<Form style={{width: "50%", margin:"0 auto",marginTop:"4%",padding:"40px 50px",backgroundColor:"rgb(245, 245, 245)"} } action="/" onSubmit={SignUpCheck}>
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formGridEmail">
           <Form.Label>メールアドレス</Form.Label>
@@ -108,11 +108,11 @@ return(
           </Row>
           </Form.Group>
       </Row>
-      <Link to={"/"} style={{textDecoration: "none",color:"white"}}>
-      <Button onClick={SignUpCheck} variant="danger"  style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}}   type="submit">
+      <div style={{textDecoration: "none",color:"white"}}>
+      <Button variant="danger"  style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}}   type="submit">
         登録
       </Button>
-      </Link>
+      </div>
  
     </Form>
 </div>

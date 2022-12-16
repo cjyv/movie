@@ -60,7 +60,7 @@ const loginCheck=(e)=>{
         <div style={{width: "100%" ,height:"600px", margin:"7% auto"}}>
   
 <h3 style={{textDecoration:"underline red",paddingLeft:"3%"}}>ログインページ</h3>           
- <Form style={{width: "50%", margin:"0 auto",marginTop:"1%",padding:"25px 50px",backgroundColor:"rgb(245, 245, 245)"} }>
+ <Form style={{width: "50%", margin:"0 auto",marginTop:"1%",padding:"25px 50px",backgroundColor:"rgb(245, 245, 245)"} } action="/" onSubmit={loginCheck}>
     <div style={{textAlign:"center"}}>
  <Image src="https://www.kururu.co.jp/wp-content/uploads/2022/02/shop_logo_toho_cinema.png"　style={{width:"50%",marginBottom:"1%"}}></Image>
  </div>
@@ -78,11 +78,11 @@ const loginCheck=(e)=>{
         <Form.Check type="checkbox" label="次回から自動的にログイン" />
       </Form.Group>
    
-      <Link to={"/"} style={{textDecoration: "none",color:"white"}}>
-      <Button onClick={loginCheck} variant="danger" style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}} type="submit">
+      <div style={{textDecoration: "none",color:"white"}}>
+      <Button variant="danger" style={{width:"80%",display:"block",margin:"auto",height:"60px",marginTop:"5%"}} type="submit">
         ログイン
       </Button>
-      </Link>
+      </div>
     </Form>
     <div style={{marginTop:"3%",textAlign:"center"}}>
         <p>*会員ではない方は会員加入してください。</p>

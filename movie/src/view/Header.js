@@ -32,7 +32,7 @@ const Header = () => {
 
       })
 
-  }, [posts]);
+  }, []);
 
 
   const logOut = (e) => {

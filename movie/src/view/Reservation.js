@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { Image } from "react-bootstrap";
+import Card from 'react-bootstrap/Card';
 import dayjs from 'dayjs';
 
 
@@ -18,8 +19,9 @@ const Reservation = () => {
     const [name, setname] = useState("");
     const [e_mail, sete_mail] = useState("");
     const [cinema,setcinema]= useState(null);
-    //const [now,setnow] = useState("");
-    
+    const [time,settime] = useState("");
+    const [schedule,setschedule] = useState([]);
+    const [cinema_room,setcinema_room] = useState("");
 
     const today = new Date();
     const year = today.getFullYear();
@@ -68,36 +70,31 @@ const Reservation = () => {
             })
 
     }, []);
-    useEffect(()=>{
+    const dateChange=()=>{
         const cinema =document.getElementById("cinema").value;
         const date = document.getElementsByName("date")[0].value;
-        
-        if(date!=null){
-            axios.get("/cinemaScedule",{
-                movie_number: movie_number,
-                cinema: cinema,
-                date: date
-            })
+        console.log(cinema_room);
+        if(date!="" &&cinema!=null){
+            axios.get("/cinemaScedule/"+movie_number+"/"+cinema+"/"+date)
             .then(res=>{
-                console.log(res);
+                setschedule(res.data);
             })
             .catch(error=>{
                 console.log(error);
             })
         }
-    },[cinema])
-    
+    };
+ 
     
     const reservationCheck = (e) => {
         
         const  name= document.getElementsByName("name")[0].value;
         const e_mail = document.getElementsByName("e_mail")[0].value;
         const date = document.getElementsByName("date")[0].value;
-        const time = document.getElementsByName("time")[0].value;
         const datetime = date+" "+time;
         const cinema =document.getElementsByName("cinema")[0].value;
-
-        if(name===""||e_mail===""||date===null||time===null){
+   
+        if(name===""||e_mail===""||date===null||time===""){
             if(e_mail===""&&name!==""||cinema!==""){
                 e.preventDefault();
                 alert("メールアドレスを記入してください。");
@@ -117,7 +114,8 @@ const Reservation = () => {
                     movie_number: movie_number,
                     cinema: cinema,
                     user_number: usernumber,
-                    reservation_date: datetime
+                    reservation_date: datetime,
+                    cinema_room:cinema_room
                 }).then(res=>{
                     
                     
@@ -128,10 +126,23 @@ const Reservation = () => {
         }
 
     };
+    const reservationSeat=(s_time,croom)=>{
+        settime(s_time);
+        setcinema_room(croom);
+        
+      
+    };
+    const styleObj ={
+ 
+        border:"1px solid black"
+        
+ 
+    }
+
 
     return (
 
-        <div style={{ width: "100%", height: "1200px", margin: "7% auto" }}>
+        <div style={{ width: "100%", height: "auto", margin: "7% auto" }}>
             <h3 style={{ textDecoration: "underline red", paddingLeft: "3%" }}>予約ページ</h3>
             <Form style={{ width: "50%", margin: "0 auto", marginTop: "4%", padding: "40px 50px", backgroundColor: "rgb(245, 245, 245)" }} action="/myPage" onSubmit={reservationCheck}>
 
@@ -173,7 +184,7 @@ const Reservation = () => {
                 <Row className="mb-3">
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
    <Form.Label>劇場</Form.Label> 
-   <Form.Select aria-label="Default select example" name="cinema" id="cinema" defaultValue={cinema}>
+   <Form.Select aria-label="Default select example" name="cinema" id="cinema" defaultValue={cinema} onChange={dateChange} >
  <option value={null}>選択</option>
  <option value="1">TOHOシネマズ おいらせ下田</option>
  <option value="2">TOHOシネマズ 秋田</option>
@@ -206,13 +217,68 @@ const Reservation = () => {
                 <Row className="mb-3">
                     <Form.Group as={Col} className="mb-3" controlId="formGridAddress2" style={{ textAlign: "left" }}>
                         <Form.Label>日付</Form.Label>
-                        <Form.Control name="date" id="date" type="date" min={now} />
+                        <Form.Control name="date" id="date" type="date" min={now} onChange={dateChange}/>
                     </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="formGridAddress2" style={{ textAlign: "left" }}>
-                        <Form.Label>時間</Form.Label>
-                        <Form.Control name="time" id="time" type="time" min="08:00" max="23:00" />
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} className="mb-3" controlId="formGridAddress2" style={{ textAlign: "left"}}>
+                            <Form.Label>時間帯</Form.Label>
+                               <hr></hr>
+                        {schedule!=""?
+                        schedule.map(schedules=>
+                    
+                        <Card style={{ width: '13rem',height:'100px', float:"left",  marginLeft:"8%",marginTop:"5%"}}>
+               <Card.Body>
+               <Card.Title>{schedules.cinema_room}号館　<Button type="button" variant="success" onClick={()=>{reservationSeat(schedules.start_time,schedules.cinema_room)}}>選択</Button></Card.Title>
+                 <Card.Text>
+                 {schedules.start_time} ~ {schedules.end_time}
+                 </Card.Text>
+            
+               </Card.Body>
+             </Card>
+                        )
+                        : null
+                    }
                     </Form.Group>
-                </Row>
+                    </Row>
+                    {cinema_room!=""&&time!=""&&schedule!=""?
+                                          <Row className="mb-3">
+                                            <div class="seat-wrapper" style={{textAlign:"center"}}>
+                                            <div style={{width:"80%",height:"30px", margin:"0 auto", border:"1px solid black"}}>
+                                             screen
+                                            </div>
+                                            <table border={1} style={{marginLeft:"auto",marginRight:"auto",width:"20rem",marginTop:"10px"}}>
+                                            <tr>
+                                            <td id="A1" style={styleObj}>A1</td>
+                                            <td id="A2" style={styleObj}>A2</td>
+                                            <td id="A3"  style={styleObj}>A3</td>
+                                            <td id="A4" style={styleObj}>A4</td>
+                                            </tr>
+                                            <tr >
+                                            <td id="B1" style={styleObj}>B1</td>
+                                            <td id="B2" style={styleObj}>B2</td>
+                                            <td id="B3" style={styleObj}>B3</td>
+                                            <td id="B4" style={styleObj}>B4</td>
+                                            </tr>
+                                            <tr>
+                                            <td id="C1" style={styleObj}>C1</td>
+                                            <td id="C2" style={styleObj}>C2</td>
+                                            <td id="C3" tyle={styleObj}>C3</td>
+                                            <td id="C4" style={styleObj}>C4</td>
+                                            </tr>
+                                            <tr>
+                                            <td id="D1" style={styleObj}>D1</td>
+                                            <td id="D2" style={styleObj}>D2</td>
+                                            <td id="D3" style={styleObj}>D3</td>
+                                            <td id="D4" style={styleObj}>D4</td>
+                                            </tr>
+                                            </table>
+
+                                            </div>
+                                        </Row>
+                                        :
+                                        null
+                 }
 
                         <Button variant="danger" style={{ width: "80%", display: "block", margin: "auto", height: "60px", marginTop: "5%" }} type="submit">
                             予約

@@ -399,9 +399,10 @@ app.post("/reservation", (req, res) => {
     const movie_number = req.body.movie_number;
     const reservation_date = req.body.reservation_date;
     const cinema = req.body.cinema;
+    const cinema_room = req.body.cinema_room;
     connection.query(
-        'insert into reservation(user_number,movie_number,reservation_date,cinema) values(?,?,?,?)',
-        [user_number, movie_number, reservation_date, cinema],
+        'insert into reservation(user_number,movie_number,reservation_date,cinema,cinema_room) values(?,?,?,?,?)',
+        [user_number, movie_number, reservation_date, cinema,cinema_room],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -415,7 +416,7 @@ app.post("/reservation", (req, res) => {
 app.post("/myReservation", (req, res) => {
     const user_number = req.body.user_number;
     connection.query(
-        'select distinct b.poster,b.title,a.reservation_date,c.name as cinema,a.movie_number,a.seq from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? join cinema  as c on c.seq=a.cinema; ',
+        'select distinct b.poster,b.title,a.reservation_date,c.name as cinema,a.movie_number,a.seq,a.cinema_room,a.seat from practice.reservation as a join practice.movie as b on a.movie_number=b.seq && a.user_number=? && a.reservation_date > ? join cinema  as c on c.seq=a.cinema; ',
         [user_number, yesterday],
         (error, result) => {
             if (error) {
@@ -447,8 +448,8 @@ app.get('/search/:search', (req, res) => {
     const param = req.params.search;
     const search = "%" + param + "%";
     connection.query(
-        "select * from movie where actor Like ? || director Like ? || title Like ?",
-        [search, search, search],
+        "select * from movie where (actor Like ? || director Like ? || title Like ?) and end_date > ?",
+        [search, search, search,today],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -508,7 +509,7 @@ app.post("/resurvationDelete",(req,res)=>{
 app.get("/faq/:question",(req,res)=>{
     const question =req.params.question;
     connection.query(
-        'select answer,question from faq where question = ?',
+        'select answer,question from faq where seq = ?',
         [question],
         (error,result)=>{
             if(error){
@@ -527,7 +528,7 @@ app.get("/faq/:question",(req,res)=>{
 app.get("/faqList",(req,res)=>{
     const answer = "回答待ち";
     connection.query(
-        'select question from faq where answer != ? order by seq desc limit 4',
+        'select seq,question from faq where answer != ? order by seq desc limit 4',
         [answer],
         (error,result)=>{
             if (error) {
@@ -544,7 +545,7 @@ app.get("/faqList",(req,res)=>{
 app.get("/myFaqList",(req,res)=>{
     const user_no=req.session.user.seq;
     connection.query(
-        'select question from faq where user_no = ? order by seq desc limit 4',
+        'select seq,question from faq where user_no = ? order by seq desc limit 4',
         [user_no],
         (error,result)=>{
             if (error) {
@@ -611,6 +612,25 @@ app.post("/questionInsert",(req,res)=>{
 
     )
 
+
+})
+
+app.get("/cinemaScedule/:movie_number/:cinema/:date",(req,res)=>{
+
+  const movie_number= req.params.movie_number;
+  const cinema = req.params.cinema;
+  const date = req.params.date;
+  connection.query(
+  'select cinema_room,start_time,end_time from movie_Schedule where cinema_no=? and days=? and movie_no=? order by start_time',
+  [cinema,date,movie_number],
+  (error,result)=>{
+    if(error){
+        console.log(error);
+    }else{
+        res.json(result);
+    }
+  }
+  )
 
 })
 
