@@ -17,7 +17,7 @@ class MovieList extends Component{
       componentDidMount(){
         const genre = this.props.genre;
         const search = this.props.search;
-       
+        const cinema = this.props.cinema;
         if(this.props.state==="now"){
             axios.get("/NowList/"+genre)
             .then(res=>{
@@ -37,6 +37,13 @@ class MovieList extends Component{
       }
       else if(this.props.state==="search"){
         axios.get(`/search/${search}`)
+        .then(res=>{
+          this.setState({posts: res.data})
+        })
+        .catch(error=>{
+        })
+      }   else if(this.props.state==="cinema"){
+        axios.get(`/cinemaMovies/${cinema}`)
         .then(res=>{
           this.setState({posts: res.data})
         })
@@ -67,7 +74,7 @@ class MovieList extends Component{
                  <Card.Text>
                     出演：{post.actor}
                    </Card.Text>
-                   <Link to={`/movieDetail/${post.seq}`} state={{seq: post.seq }} >
+                   <Link to={`/movieDetail/${post.seq}`} state={{seq: post.seq,cinema_no:post.cinema_no  }} >
                  <Button variant="danger" style={{width:"100%"} } type="submit">詳細</Button>
                  </Link>
                </Card.Body>

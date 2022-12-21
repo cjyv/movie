@@ -17,7 +17,7 @@ const { error } = require('console');
 const today = new Date();
 const yesterday = new Date(today.setDate(today.getDate() - 1));
 //session時間
-const maxAge = 1000 * 60 * 10;
+const maxAge = 1000 * 60 * 30;
 //ファイル
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -400,9 +400,10 @@ app.post("/reservation", (req, res) => {
     const reservation_date = req.body.reservation_date;
     const cinema = req.body.cinema;
     const cinema_room = req.body.cinema_room;
+    const seat = req.body.seat;
     connection.query(
-        'insert into reservation(user_number,movie_number,reservation_date,cinema,cinema_room) values(?,?,?,?,?)',
-        [user_number, movie_number, reservation_date, cinema,cinema_room],
+        'insert into reservation(user_number,movie_number,reservation_date,cinema,cinema_room,seat) values(?,?,?,?,?,?)',
+        [user_number, movie_number, reservation_date, cinema,cinema_room,seat],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -450,6 +451,23 @@ app.get('/search/:search', (req, res) => {
     connection.query(
         "select * from movie where (actor Like ? || director Like ? || title Like ?) and end_date > ?",
         [search, search, search,today],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            } else {
+                
+                res.json(result);
+            }
+        }
+
+    )
+});
+
+app.get('/cinemaMovies/:cinema', (req, res) => {
+    const cinema = req.params.cinema;
+    connection.query(
+        "select  distinct a.seq as seq,a.title as title,a.director as director, a.actor as actor,a.release_date as release_date,a.poster as poster,a.genre as genre, a.content as content,a.end_date as end_date,b.cinema_no as cinema_no from movie as a join movie_schedule as b on a.seq=b.movie_no where b.cinema_no=? and a.end_date > ?",
+        [cinema,today],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -621,7 +639,7 @@ app.get("/cinemaScedule/:movie_number/:cinema/:date",(req,res)=>{
   const cinema = req.params.cinema;
   const date = req.params.date;
   connection.query(
-  'select cinema_room,start_time,end_time from movie_Schedule where cinema_no=? and days=? and movie_no=? order by start_time',
+  'select seq,cinema_room,start_time,end_time from movie_Schedule where cinema_no=? and days=? and movie_no=? order by start_time',
   [cinema,date,movie_number],
   (error,result)=>{
     if(error){

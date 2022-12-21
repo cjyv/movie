@@ -12,13 +12,15 @@ const MovieDetail = () => {
   const [posts, setposts] = useState([]);
   const [reservation_ok,setreservation_ok] =useState("");
   const seq = location.state.seq;
+  const cinema_no=location.state.cinema_no;
   const [usernumber, setusernumber] = useState(0);
   const now = new Date();
 
   useEffect(() => {
     axios.get("/movieDetail/" + seq)
       .then(res => {
-        setposts(res.data)
+        setposts(res.data);
+       
         const release_date=new Date(res.data[0].release_date);
         const reservation_date = new Date(release_date.setDate(release_date.getDate() - 7));
         if (now>=reservation_date) {
@@ -133,7 +135,7 @@ const MovieDetail = () => {
         : 
         reservation_ok==="ok"?
         <div style={{ width: "80%", height: "80px", margin: "0 auto", marginTop: "5%" }}>
-          <Link to={`/reservation/${seq}`} style={{ textDecoration: "none", color: "white" }} state={{ seq: seq, usernumber: usernumber }}>
+          <Link to={`/reservation/${seq}`}   style={{ textDecoration: "none", color: "white" }} state={{ seq: seq, usernumber: usernumber,cinema_no:cinema_no}}>
             <div style={{ width: "100%", textAlign: "center" }} onClick={movieReservation} >
               <Button variant="danger" style={{ width: "60%", height: "80px" }} type="submit">今すぐ予約</Button></div>
           </Link>

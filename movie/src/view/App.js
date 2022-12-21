@@ -18,6 +18,8 @@ import MovieUpdate from "./MovieUpdate";
 import Search from "./Search";
 import FAQ from "./FAQ";
 import CinemaMovies from "./CinemaMovies";
+import CinemaSeat  from "./CinemaSeat";
+import '../css/App.css'
 
 function App() {
   return (
@@ -40,6 +42,7 @@ function App() {
       <Route exact path="/search" element={<Search/>}>Search</Route>
       <Route exact path="/FAQ" element={<FAQ/>}>FAQ</Route>
       <Route exact path="/CinemaMovies" element={<CinemaMovies/>}>CinemaMovies</Route>
+      <Route exact path="/CinemaSeat" element={<CinemaSeat/>}>CinemaSeat</Route>
 
      </Routes>
      </BrowserRouter>

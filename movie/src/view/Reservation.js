@@ -1,32 +1,39 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Table } from "react-bootstrap";
+import { Link, useLocation, useNavigate} from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { Image } from "react-bootstrap";
 import Card from 'react-bootstrap/Card';
-import dayjs from 'dayjs';
+
+
 
 
 const Reservation = () => {
 
     const location = useLocation();
+    const navigate = useNavigate();
     
 
     const [posts, setposts] = useState([]);
     const [name, setname] = useState("");
     const [e_mail, sete_mail] = useState("");
     const [cinema,setcinema]= useState(null);
-    const [time,settime] = useState("");
-    const [schedule,setschedule] = useState([]);
-    const [cinema_room,setcinema_room] = useState("");
 
+    const [schedule,setschedule] = useState([]);
+
+  
     const today = new Date();
+
     const year = today.getFullYear();
     const month = today.getMonth()+1;
     const day = today.getDate();
+
+  
+    
     const now = year+"-"+month+"-"+day;
     
   
@@ -37,6 +44,7 @@ const Reservation = () => {
 
     const movie_number = location.state.seq;
     const usernumber = location.state.usernumber;
+    const cinema_no = location.state.cinema_no;
 
 
 
@@ -70,10 +78,15 @@ const Reservation = () => {
             })
 
     }, []);
+
+
+
+
+
     const dateChange=()=>{
         const cinema =document.getElementById("cinema").value;
         const date = document.getElementsByName("date")[0].value;
-        console.log(cinema_room);
+       
         if(date!="" &&cinema!=null){
             axios.get("/cinemaScedule/"+movie_number+"/"+cinema+"/"+date)
             .then(res=>{
@@ -85,66 +98,66 @@ const Reservation = () => {
         }
     };
  
+
     
-    const reservationCheck = (e) => {
-        
+    const reservationCheck = (stime,croom) => {
+       
+        const time =stime;
+        const cinema_room=croom;
         const  name= document.getElementsByName("name")[0].value;
         const e_mail = document.getElementsByName("e_mail")[0].value;
         const date = document.getElementsByName("date")[0].value;
-        const datetime = date+" "+time;
         const cinema =document.getElementsByName("cinema")[0].value;
-   
-        if(name===""||e_mail===""||date===null||time===""){
-            if(e_mail===""&&name!==""||cinema!==""){
-                e.preventDefault();
+        const reservation_date = date+""+time; 
+
+        if(name===""||e_mail===""||cinema===null||date===""){
+            if(e_mail===""){
+           
                 alert("メールアドレスを記入してください。");
                 document.getElementById("e_mail").focus();
-            }else if(e_mail!==""&&name===""){
-                e.preventDefault();
+            }else if(name===""){
+            
                 alert("名前を記入してください。");
                 document.getElementById("name").focus();
-            }else{
+            }else if(cinema==0){
+            
+                alert("劇場を選択してください。");
+                document.getElementById("cinema").focus();
+            }
+            else if(date===""){
+               
+                alert("日付を選択してください。");
+                document.getElementById("date").focus();
+            }else if(cinema_room===""||time===""){
+             
+                alert("上映時間を選択してください。");
+            }
+            else{
                 e.preventDefault();
                 alert("予約者情報を記入してください。");
             }
+        }else{
+            const confirm = window.confirm("この時間帯で予約しますか？");
+            if (confirm) {
+                navigate('/CinemaSeat',{state:{name:name,e_mail:e_mail,reservation_date:reservation_date,cinema:cinema,movie_number:movie_number,user_number:usernumber,cinema_room:cinema_room}})
+
+            }
         }
-        else{
-            
-                axios.post("/reservation",{
-                    movie_number: movie_number,
-                    cinema: cinema,
-                    user_number: usernumber,
-                    reservation_date: datetime,
-                    cinema_room:cinema_room
-                }).then(res=>{
-                    
-                    
-                }).catch(error=>{
-                    console.log(error)
-                });
-                alert("予約完了しました。");
-        }
+        
 
     };
-    const reservationSeat=(s_time,croom)=>{
-        settime(s_time);
-        setcinema_room(croom);
-        
+   
       
-    };
-    const styleObj ={
+
+
  
-        border:"1px solid black"
-        
- 
-    }
 
 
     return (
 
         <div style={{ width: "100%", height: "auto", margin: "7% auto" }}>
             <h3 style={{ textDecoration: "underline red", paddingLeft: "3%" }}>予約ページ</h3>
-            <Form style={{ width: "50%", margin: "0 auto", marginTop: "4%", padding: "40px 50px", backgroundColor: "rgb(245, 245, 245)" }} action="/myPage" onSubmit={reservationCheck}>
+            <Form style={{ width: "50%", margin: "0 auto", marginTop: "4%", padding: "40px 50px", backgroundColor: "rgb(245, 245, 245)" }} >
 
                 <Row>
                     <h6 style={{ textDecoration: "underline red", paddingLeft: "3%" }}>予約作品</h6>
@@ -184,8 +197,8 @@ const Reservation = () => {
                 <Row className="mb-3">
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
    <Form.Label>劇場</Form.Label> 
-   <Form.Select aria-label="Default select example" name="cinema" id="cinema" defaultValue={cinema} onChange={dateChange} >
- <option value={null}>選択</option>
+   <Form.Select aria-label="Default select example" name="cinema" id="cinema" defaultValue={cinema_no} onChange={dateChange} >
+ <option value="0">選択</option>
  <option value="1">TOHOシネマズ おいらせ下田</option>
  <option value="2">TOHOシネマズ 秋田</option>
  <option value="3">TOHOシネマズ 仙台</option>
@@ -226,63 +239,20 @@ const Reservation = () => {
                                <hr></hr>
                         {schedule!=""?
                         schedule.map(schedules=>
-                    
-                        <Card style={{ width: '13rem',height:'100px', float:"left",  marginLeft:"8%",marginTop:"5%"}}>
-               <Card.Body>
-               <Card.Title>{schedules.cinema_room}号館　<Button type="button" variant="success" onClick={()=>{reservationSeat(schedules.start_time,schedules.cinema_room)}}>選択</Button></Card.Title>
-                 <Card.Text>
-                 {schedules.start_time} ~ {schedules.end_time}
-                 </Card.Text>
-            
-               </Card.Body>
-             </Card>
+
+            <Button type="button" variant="outline-success" onClick={()=>{reservationCheck(schedules.start_time,schedules.cinema_room)}} style={{ width: '12rem',height:'100px', float:"left",  marginLeft:"8%",marginTop:"5%"}}>{schedules.cinema_room}号館　
+            <br></br>
+            {schedules.start_time} ~ {schedules.end_time}
+            </Button>
+           
                         )
-                        : null
+                        : <div>
+                          <h5>  上映予定がない日付です。申し訳ございません。</h5>
+                        </div>
                     }
                     </Form.Group>
                     </Row>
-                    {cinema_room!=""&&time!=""&&schedule!=""?
-                                          <Row className="mb-3">
-                                            <div class="seat-wrapper" style={{textAlign:"center"}}>
-                                            <div style={{width:"80%",height:"30px", margin:"0 auto", border:"1px solid black"}}>
-                                             screen
-                                            </div>
-                                            <table border={1} style={{marginLeft:"auto",marginRight:"auto",width:"20rem",marginTop:"10px"}}>
-                                            <tr>
-                                            <td id="A1" style={styleObj}>A1</td>
-                                            <td id="A2" style={styleObj}>A2</td>
-                                            <td id="A3"  style={styleObj}>A3</td>
-                                            <td id="A4" style={styleObj}>A4</td>
-                                            </tr>
-                                            <tr >
-                                            <td id="B1" style={styleObj}>B1</td>
-                                            <td id="B2" style={styleObj}>B2</td>
-                                            <td id="B3" style={styleObj}>B3</td>
-                                            <td id="B4" style={styleObj}>B4</td>
-                                            </tr>
-                                            <tr>
-                                            <td id="C1" style={styleObj}>C1</td>
-                                            <td id="C2" style={styleObj}>C2</td>
-                                            <td id="C3" tyle={styleObj}>C3</td>
-                                            <td id="C4" style={styleObj}>C4</td>
-                                            </tr>
-                                            <tr>
-                                            <td id="D1" style={styleObj}>D1</td>
-                                            <td id="D2" style={styleObj}>D2</td>
-                                            <td id="D3" style={styleObj}>D3</td>
-                                            <td id="D4" style={styleObj}>D4</td>
-                                            </tr>
-                                            </table>
-
-                                            </div>
-                                        </Row>
-                                        :
-                                        null
-                 }
-
-                        <Button variant="danger" style={{ width: "80%", display: "block", margin: "auto", height: "60px", marginTop: "5%" }} type="submit">
-                            予約
-                        </Button>
+                  
             </Form>
         </div>
 
