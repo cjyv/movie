@@ -62,7 +62,7 @@ const MyResurvation = (props) => {
     :
     posts.map(post=>
              
-             <Card style={{ width: '16rem',float:"left",  marginLeft:"8%",marginTop:"2%"}}>
+             <Card style={{ width: '17rem',float:"left",  marginLeft:"8%",marginTop:"2%"}}>
                <Card.Img variant="top" style={{height:"250px"}} src={`img/${post.poster}`} />
                <Card.Body>
                  <Card.Title>{post.title}</Card.Title>

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation,useNavigate} from "react-router";
 import { Button } from "react-bootstrap";
 import axios from "axios";
-
-
+import {Image} from "react-bootstrap";
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import dayjs from 'dayjs';
 
 
 const CinemaSeat=()=>{
@@ -15,11 +18,31 @@ const CinemaSeat=()=>{
     const reservation_date=location.state.reservation_date;
     const user_number=location.state.user_number;
     const e_mail = location.state.e_mail;
-　
+    const title = location.state.title;
+    const poster = location.state.poster;
+    const cinemaName = location.state.cinemaName;
+
+    //const [reservedSeats,setreservedSeat] =useState([]);
+    let reservedSeats=[];
     const seats=[];
-  
+    const navigate = useNavigate();
+   
     useEffect(()=>{
-        axios.get('/')
+        axios.get('/reservedSeat/'+cinema+"/"+cinema_room+"/"+reservation_date)
+        .then(res=>{
+            reservedSeats=res.data;
+            for (let i = 0; i < reservedSeats.length; i++) {
+                const reservedSeat = document.getElementById(reservedSeats[i].seat);
+                reservedSeat.className="reservedSeat";
+                
+                
+              }
+          
+        })
+        .catch(error=>{
+            console.log(error);
+        });
+        
         
         },[])
 
@@ -41,19 +64,71 @@ const CinemaSeat=()=>{
                   i--;
                 }
               }
-            }
+            }  
             console.log(seats);
             
     }
+
+    const reservation=()=>{
+        if (seats.length==0) {
+            alert("選択した席がないです。確認ください。")
+        }else{
+        const confirm=window.confirm(seats+" この席で予約しますか？");
+        if (confirm) {
+            axios.post("/reservation",{
+                user_number:user_number,
+                movie_number:movie_number,
+                reservation_date:reservation_date,
+                cinema:cinema,
+                cinema_room:cinema_room,
+                seat:seats
+            })
+            .then(res=>{
+                
+            })
+            .catch(error=>{
+                console.log(error);
+            })  
+            navigate('/myPage')
+        }else{
+
+        }
+    }
+    }
+    
     return(
 
         <div style={{ width: "100%", height: "auto", margin: "7% auto" }}>
         <h3 style={{ textDecoration: "underline red", paddingLeft: "3%" }}>予約ページ</h3>
         <div style={{marginTop:"2%"}}>
-        <div id="reservationInfo" >
-         <table>
-            
-         </table>
+        <div id="reservationInfo" style={{width:"100%",height:"220px"}} >
+            <div style={{float:"left"}}>
+        <Image style={{ width: "180px", height: "200px", marginLeft: "10%",marginTop:"4%",marginBottom:"2%" }} src={`../img/${poster}`} />
+        </div>
+        <Container style={{textAlign:"left",marginLeft:"3%",marginTop:"3%"}}>
+      <Row xs={"auto"}>
+        <Col>
+        </Col>
+        <Col>タイトル：{title}</Col>
+        </Row>
+        <Row xs={"auto"}> 
+            <Col></Col>
+            <Col>予約者名：{name}</Col>
+            <Col>メール:{e_mail}</Col>
+        </Row>
+        <Row xs={"auto"}>
+        <Col>
+        </Col>
+        <Col>劇場名：{cinemaName}</Col>
+        <Col>上映館：{cinema_room}号館</Col>
+        </Row>
+        <Row xs={"auto"}>
+        <Col>
+        </Col>
+        <Col>予約日時：{dayjs(`${reservation_date}`).format('YYYY-MM-DD HH:mm')}</Col>
+        </Row>
+  
+        </Container>
         </div>
         <div style={{textAlign:"center",marginTop:"2%"}}>
                     <div style={{width:"80%",height:"30px", margin:"0 auto", border:"1px solid black"}}>
@@ -198,8 +273,11 @@ const CinemaSeat=()=>{
                        
                                             </table>
                                             </div>
+                                            <div style={{marginTop:"3%",textAlign:"center"}}>
+                                        <p><span id="balck"></span>予約済席 <span id="red"></span>選択した席 <span id="white"></span>予約可席</p>
+                                            </div>
                                             <div style={{ width: "100%", textAlign: "center", marginTop:"3%" }}  >
-              <Button variant="danger" style={{ width: "40%", height: "80px" }} type="button">予約</Button></div>
+              <Button variant="danger" onClick={reservation} style={{ width: "40%", height: "80px" }} type="button">予約</Button></div>
 
 
         </div>

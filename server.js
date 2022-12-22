@@ -653,6 +653,25 @@ app.get("/cinemaScedule/:movie_number/:cinema/:date",(req,res)=>{
 })
 
 
+app.get("/reservedSeat/:cinema/:cinema_room/:reservation_date",(req,res)=>{
+
+    const cinema_room= req.params.cinema_room;
+    const cinema = req.params.cinema;
+    const date = req.params.reservation_date;
+    connection.query(
+    'select seat from reservation where cinema=? and cinema_room=? and reservation_date=?',
+    [cinema,cinema_room,date],
+    (error,result)=>{
+      if(error){
+          console.log(error);
+      }else{
+          res.json(result);
+      }
+    }
+    )
+  
+  })
+
 app.listen(8080, function () {
     console.log('listenting on 8080')
 });

@@ -22,7 +22,8 @@ const Reservation = () => {
     const [name, setname] = useState("");
     const [e_mail, sete_mail] = useState("");
     const [cinema,setcinema]= useState(null);
-
+    const [title,settitle]=useState("");
+    const [poster,setposter]=useState("");
     const [schedule,setschedule] = useState([]);
 
   
@@ -59,7 +60,9 @@ const Reservation = () => {
 
         axios.get("/movieDetail/" + movie_number)
             .then(res => {
-                setposts(res.data)
+                setposts(res.data);
+                setposter(res.data[0].poster);
+                settitle(res.data[0].title);
 
             }).catch(error => {
                 console.log(error);
@@ -107,9 +110,14 @@ const Reservation = () => {
         const  name= document.getElementsByName("name")[0].value;
         const e_mail = document.getElementsByName("e_mail")[0].value;
         const date = document.getElementsByName("date")[0].value;
-        const cinema =document.getElementsByName("cinema")[0].value;
-        const reservation_date = date+""+time; 
+        const cinema =document.getElementById("cinema").value;
+        const cinematext =document.getElementById("cinema");
 
+        const reservation_date = date+" "+time; 
+        const cinemaName =  cinematext.options[cinematext.selectedIndex].text;
+       
+
+    
         if(name===""||e_mail===""||cinema===null||date===""){
             if(e_mail===""){
            
@@ -139,7 +147,7 @@ const Reservation = () => {
         }else{
             const confirm = window.confirm("この時間帯で予約しますか？");
             if (confirm) {
-                navigate('/CinemaSeat',{state:{name:name,e_mail:e_mail,reservation_date:reservation_date,cinema:cinema,movie_number:movie_number,user_number:usernumber,cinema_room:cinema_room}})
+                navigate('/CinemaSeat',{state:{name:name,e_mail:e_mail,reservation_date:reservation_date,cinema:cinema,movie_number:movie_number,user_number:usernumber,cinema_room:cinema_room,title:title,poster:poster,cinemaName:cinemaName}})
 
             }
         }

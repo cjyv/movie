@@ -8,13 +8,38 @@
     border: 1px solid black;
     color: black;
 }
-.reservation{
-    background-color:black;
-    border: 1px solid black;
-    color: red;
-}
+
 #reservationInfo{
     border: 1px solid black;
     background-color: #eeccee;
+}
+
+.reservedSeat{
+    background-color:black;
+    border: 1px solid black;
+    color: white;
+}
+
+#balck{
+    background-color:black;
+    border: 1px solid black;
+    display:inline-block;
+    width: 15px;
+    height: 15px;
+}
+#red{
+    background-color:red;
+    border: 1px solid black;
+    display:inline-block;
+    width: 15px;
+    height: 15px;
+}
+
+#white{
+    background-color:white;
+    border: 1px solid black;
+    display:inline-block;
+    width: 15px;
+    height: 15px;
 }
 
