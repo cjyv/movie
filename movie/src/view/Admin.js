@@ -3,6 +3,7 @@ import MovieInsert from "./MovieInsert";
 import AccountManager from "./AccountManager";
 import Answer from "./Answer"
 const Admin = ()=>{
+  
 
     return(
         <div style={{width: "100%" ,height:"auto", margin:"7% auto"}}>

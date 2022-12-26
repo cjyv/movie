@@ -15,6 +15,7 @@ const Header = () => {
   const [posts, setposts] = useState(0);
   const [nickName, setnickName] = useState("");
   const [seq, setseq] = useState(0);
+  const [accountLevel,setaccountLevel] = useState(0);
 
 
   useEffect(() => {
@@ -24,6 +25,8 @@ const Header = () => {
         setposts(res.data[0].state)
         setnickName(res.data[0].nickName);
         setseq(res.data[0].seq);
+        setaccountLevel(res.data[0].accountLevel);
+      
       })
       .catch(error => {
         console.log(error);
@@ -106,9 +109,10 @@ const faq=()=>{
 
 
               {
-                nickName === "admin" ?
+                accountLevel ===3 ?
                   <Nav.Link href="/admin" >管理者ページ</Nav.Link>
-
+                :accountLevel===2?
+                <Nav.Link href="/cinemaManager" >劇場管理ページ</Nav.Link>
                   : (posts == 0
                     ?
                     null

@@ -7,7 +7,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import dayjs from 'dayjs';
-
+import {v4 as uuidv4} from 'uuid';
 
 const CinemaSeat=()=>{
 　　const location = useLocation();
@@ -21,10 +21,10 @@ const CinemaSeat=()=>{
     const title = location.state.title;
     const poster = location.state.poster;
     const cinemaName = location.state.cinemaName;
-
+    const seq = uuidv4();
     //const [reservedSeats,setreservedSeat] =useState([]);
     let reservedSeats=[];
-    const seats=[];
+    const seats=Array();
     const navigate = useNavigate();
    
     useEffect(()=>{
@@ -49,6 +49,9 @@ const CinemaSeat=()=>{
     const checked =(idname)=>{
         const id = document.getElementById(idname);
         const seat = id.innerHTML;
+       
+       
+
         if (id.className=="r_table") {
             id.className="checked";
            seats.push(seat);
@@ -64,9 +67,20 @@ const CinemaSeat=()=>{
                   i--;
                 }
               }
-            }  
-            console.log(seats);
-            
+            }
+          if(seats.length>=2){
+            alert("多数席予約まだ不可能")
+            id.className="r_table";
+         
+        
+            for(let i = 0; i < seats.length; i++) {
+                if(seats[i] === seat)  {
+                    seats.splice(i, 1);
+                  i--;
+                }
+              }
+          };
+          
     }
 
     const reservation=()=>{
@@ -75,12 +89,24 @@ const CinemaSeat=()=>{
         }else{
         const confirm=window.confirm(seats+" この席で予約しますか？");
         if (confirm) {
+/* 多数席予約
+            axios.post("/reservaitionSeat",{
+                reservation_no:seq,
+                seat:seats
+            }).then(res=>{
+
+            }).catch(error=>{
+                console.log(error);
+            });
+
+      */      
             axios.post("/reservation",{
                 user_number:user_number,
                 movie_number:movie_number,
                 reservation_date:reservation_date,
                 cinema:cinema,
                 cinema_room:cinema_room,
+                seq:seq,
                 seat:seats
             })
             .then(res=>{

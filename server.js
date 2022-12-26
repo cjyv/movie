@@ -160,18 +160,20 @@ app.get("/movieDetail/:seq", (req, res) => {
 
 app.post("/loginCheck", (req, res) => {
     connection.query(
-        'select count(*) as count,seq,nickName,e_mail from account where e_mail=? and password=?',
+        'select count(*) as count,seq,nickName,e_mail,accountLevel from account where e_mail=? and password=?',
         [req.body.e_mail, req.body.password],
         (error, result) => {
-
+                
             if (result[0].count == 0) {
                 res.json(result);
             }
             else {
+           
                 req.session.user = {
                     e_mail: result[0].e_mail,
                     nickName: result[0].nickName,
                     seq: result[0].seq,
+                    accountLevel: result[0].accountLevel,
                     authorized: true
 
                 }
@@ -199,10 +201,12 @@ app.get("/logOut", (req, res) => {
 app.post("/userState", (req, res) => {
 
     if (req.session.user) {
+       
         res.json([{
             state: 1,
             seq: req.session.user.seq,
-            nickName: req.session.user.nickName
+            nickName: req.session.user.nickName,
+            accountLevel: req.session.user.accountLevel
         }])
     } else {
 
@@ -238,7 +242,7 @@ app.post('/signUp', (req, res) => {
     const nickName = req.body.nickName;
     const number = req.body.number;
     connection.query(
-        'insert into account(e_mail,password,name,nickName,phone) values(?,?,?,?,?)',
+        'insert into account(e_mail,password,name,nickName,phone,accountLevel) values(?,?,?,?,?,1)',
         [email, password, name, nickName, number],
         (error, result) => {
             if (error) {
@@ -400,10 +404,11 @@ app.post("/reservation", (req, res) => {
     const reservation_date = req.body.reservation_date;
     const cinema = req.body.cinema;
     const cinema_room = req.body.cinema_room;
+    const seq = req.body.seq;
     const seat = req.body.seat;
     connection.query(
-        'insert into reservation(user_number,movie_number,reservation_date,cinema,cinema_room,seat) values(?,?,?,?,?,?)',
-        [user_number, movie_number, reservation_date, cinema,cinema_room,seat],
+        'insert into reservation(seq,user_number,movie_number,reservation_date,cinema,cinema_room,seat) values(?,?,?,?,?,?,?)',
+        [seq,user_number, movie_number, reservation_date, cinema,cinema_room,seat],
         (error, result) => {
             if (error) {
                 console.log(error);
@@ -413,7 +418,24 @@ app.post("/reservation", (req, res) => {
         }
     )
 });
-
+/*多数席予約
+app.post("/reservaitionSeat",(req,res)=>{
+    const reservation_no = req.body.seq;
+    const seat = req.body.seat;
+    console.log(seat)
+    connection.query(
+        'insert into movie_seat(reservation_no,seat) values(?,?)',
+        [reservation_no,seat],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("seatreservation success");
+            }
+        }
+    )
+});
+*/
 app.post("/myReservation", (req, res) => {
     const user_number = req.body.user_number;
     connection.query(
@@ -497,7 +519,8 @@ app.post("/recomend",(req,res)=>{
 })
 app.get("/slide",(req,res)=>{
     connection.query(
-        'select slide from movie where slide is not null and slide != "" order by release_date desc limit 3 ',
+        'select slide from movie where slide is not null and slide != "" and  release_date <= ? order by release_date desc limit 3 ',
+        [today],
         (error,result)=>{
             if (error) {
                 console.log(error);
@@ -659,7 +682,7 @@ app.get("/reservedSeat/:cinema/:cinema_room/:reservation_date",(req,res)=>{
     const cinema = req.params.cinema;
     const date = req.params.reservation_date;
     connection.query(
-    'select seat from reservation where cinema=? and cinema_room=? and reservation_date=?',
+    'select seat from reservation  where cinema=? and cinema_room=? and reservation_date=?',
     [cinema,cinema_room,date],
     (error,result)=>{
       if(error){

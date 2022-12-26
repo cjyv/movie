@@ -19,6 +19,7 @@ import Search from "./Search";
 import FAQ from "./FAQ";
 import CinemaMovies from "./CinemaMovies";
 import CinemaSeat  from "./CinemaSeat";
+import cinemaManager from "./CinemaManager";
 import '../css/App.css'
 
 function App() {
@@ -35,8 +36,9 @@ function App() {
       <Route exact path="/signUp" element={<SignUp/>}>SignUp</Route>
       <Route exact path="/myPage" element={<MyPage/>}>MyPage</Route>
       <Route exact path="/admin" element={<Admin/>}>Admin</Route>
+      <Route exact path="/cinemaManager" element={<cinemaManager/>}>cinemaManager</Route>
       <Route exact path="/company" element={<Company/>}>Company</Route>
-      <Route exact path="/Cinema" element={<Cinema/>}>nearlyCinema</Route>
+      <Route exact path="/Cinema" element={<Cinema/>}>Cinema</Route>
       <Route exact path="/reservation/:seq" element={<Reservation/>}>reservation</Route>
       <Route exact path="/movieUpdate" element={<MovieUpdate/>}>MovieUpdate</Route>
       <Route exact path="/search" element={<Search/>}>Search</Route>

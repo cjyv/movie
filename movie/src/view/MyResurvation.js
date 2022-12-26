@@ -26,8 +26,8 @@ const MyResurvation = (props) => {
         .catch(error=>{
             
         })
-
-
+        
+   
     },[posts]);
 
     const cancel=(e)=>{
